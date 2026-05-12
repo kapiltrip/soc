@@ -6,10 +6,6 @@
 - [Topic 1: SoC Memory Design - Memory Technology](#topic-1)
   - [Question](#topic-1-question)
   - [Main Explanation](#topic-1-explanation)
-  - [Beginner Foundation](#topic-1-beginner-foundation)
-  - [Memory Roles](#topic-1-memory-roles)
-  - [Why Each Memory Is Suited](#topic-1-suited-roles)
-  - [Technology Selection](#topic-1-selection)
   - [Final Exam-Ready Answer](#topic-1-final-answer)
   - [Technical Words](#topic-1-technical-words)
   - [Images / Diagrams](#topic-1-diagrams)
@@ -22,9 +18,6 @@
 - [Topic 3: SDRAM Basics - Banked Architecture and Latencies](#topic-3)
   - [Question](#topic-3-question)
   - [Main Explanation](#topic-3-explanation)
-  - [SDRAM Foundation](#topic-3-foundation)
-  - [Address Organization](#topic-3-address-organization)
-  - [Why Latencies Exist](#topic-3-why-latencies-exist)
   - [Final Exam-Ready Answer](#topic-3-final-answer)
   - [Technical Words](#topic-3-technical-words)
   - [Images / Diagrams](#topic-3-diagrams)
@@ -59,7 +52,6 @@ Use this section to revise the full forms and meanings used throughout CLO 3. Fo
 | SRAM | Static Random Access Memory | Fast volatile memory that stores data using latch-based cells and does not need refresh while powered. Used for caches, TCM, scratchpads, FIFOs and buffers. |
 | DRAM | Dynamic Random Access Memory | Dense volatile memory that stores bits as charge on capacitors and therefore needs periodic refresh. Used for large main memory. |
 | SDRAM | Synchronous Dynamic Random Access Memory | DRAM synchronized to a clock, organized with banks, rows, columns and commands such as activate/read/write/precharge/refresh. |
-| DDR | Double Data Rate | Interface idea where data transfers occur on both rising and falling clock edges; commonly used as shorthand for DDR SDRAM. |
 | DDR SDRAM | Double Data Rate Synchronous Dynamic Random Access Memory | SDRAM interface family that transfers data on both rising and falling clock edges to increase bandwidth. |
 | LPDDR | Low-Power Double Data Rate | Low-power DDR DRAM family optimized for mobile, embedded and battery-powered SoCs. |
 | HBM | High Bandwidth Memory | Stacked DRAM technology using a very wide interface and advanced packaging for very high bandwidth. |
@@ -69,7 +61,7 @@ Use this section to revise the full forms and meanings used throughout CLO 3. Fo
 | OTP | One-Time Programmable | Memory that can be programmed once and then permanently retains data. |
 | EEPROM | Electrically Erasable Programmable Read-Only Memory | Non-volatile memory that can be electrically erased and rewritten, slower and endurance-limited. |
 | NOR Flash | Non-volatile Flash memory with good random read behavior | Used for boot code, firmware and execute-in-place code storage. |
-| NAND Flash | Dense non-volatile Flash memory | Used for mass storage; needs ECC - Error Correction Code, bad-block management and wear leveling. |
+| NAND Flash | Dense non-volatile Flash memory | Used for mass storage; needs ECC, bad-block management and wear leveling. |
 | eMMC | embedded MultiMediaCard | Managed NAND storage package/interface used in embedded systems. |
 | UFS | Universal Flash Storage | Higher-performance managed NAND storage interface used in phones and embedded systems. |
 | NVM | Non-Volatile Memory | Any memory that retains data without power, such as ROM, Flash, MRAM, ReRAM or PCM. |
@@ -85,29 +77,19 @@ Use this section to revise the full forms and meanings used throughout CLO 3. Fo
 | FIFO | First-In First-Out | Ordered buffer where the first written data is the first read data. |
 | CPU | Central Processing Unit | Processor core that fetches instructions and accesses memory. |
 | GPU | Graphics Processing Unit | Graphics/parallel processing accelerator that often needs high memory bandwidth. |
-| DSP | Digital Signal Processor | Processor/accelerator for signal-processing tasks such as filtering, audio, modem and control algorithms. |
-| DMA | Direct Memory Access | Hardware controller that moves data between memory and peripherals, or between memory regions, without continuous CPU involvement. |
-| Hardware accelerator | Specialized compute block | SoC block designed to perform a specific task faster or more energy-efficiently than a general-purpose CPU. |
-| AXI | Advanced eXtensible Interface | AMBA bus/interconnect protocol commonly used for high-performance SoC memory transactions. |
-| AHB | Advanced High-performance Bus | AMBA bus protocol commonly used for on-chip communication in embedded SoCs. |
+| DSP | Digital Signal Processor | Processor/accelerator for signal-processing tasks. |
+| DMA | Direct Memory Access | Controller that transfers data without continuous CPU involvement. |
 | NoC | Network on Chip | On-chip communication network connecting masters, memories and controllers. |
 | PHY | Physical Layer | Circuit block that drives/receives electrical memory-interface signals such as DDR/LPDDR signals. |
 | ECC | Error Correction Code | Extra protection bits used to detect and often correct memory errors. |
 | QoS | Quality of Service | Memory-controller policy support for latency, bandwidth, priority and fairness guarantees. |
-| SoC master / Memory master | Request-initiating block | Any block that can start a memory transaction, such as CPU, GPU, DMA, display controller, camera interface, DSP or accelerator. |
-| Arbiter | Access-decision logic | Controller logic that decides which waiting master/request gets service first. |
-| Scheduler | Command-ordering logic | Controller logic that chooses an efficient and legal order for memory commands. |
-| Starvation | Excessive waiting due to priority/reordering | Condition where a request or master waits too long because other traffic keeps being served first. |
 | FR-FCFS | First-Ready First-Come First-Served | Memory scheduling policy that prioritizes ready commands/row hits while considering arrival order. |
 | Row buffer | Open row storage inside a DRAM bank | Holds the currently activated row; row hits are faster than row conflicts. |
 | Bank | Independent DRAM subarray | Allows overlapping operations and bank interleaving. |
 | Rank | Group of DRAM chips/devices selected together | Common organization unit in DDR memory systems. |
 | Channel | Independent memory interface path | More channels usually increase bandwidth. |
 | ACT / ACTIVATE | Activate command | Opens a DRAM row in a selected bank. |
-| READ command | Memory read command | Command that transfers selected data from an open DRAM row/column to the controller. |
-| WRITE command | Memory write command | Command that writes controller-provided data into selected columns of an open DRAM row. |
 | PRE / PRECHARGE | Precharge command | Closes the open row and prepares a bank for another row. |
-| REFRESH command | DRAM refresh command | Restores charge in DRAM cells so stored data is not lost. |
 | CAS | Column Address Strobe | DRAM column access concept; appears in CAS latency. |
 | CL | CAS Latency | Delay between READ command and data availability. |
 | tRCD | Row-to-Column Delay | Delay between ACTIVATE and READ/WRITE. |
@@ -123,7 +105,7 @@ Memory line for CLO 3:
 
 ```text
 SRAM is fast and on-chip.
-DRAM - Dynamic Random Access Memory, SDRAM - Synchronous Dynamic Random Access Memory, DDR - Double Data Rate, LPDDR - Low-Power Double Data Rate and HBM - High Bandwidth Memory are DRAM-family memories/interfaces that give large main-memory capacity and bandwidth.
+DRAM/SDRAM/DDR/LPDDR/HBM are Dynamic Random Access Memory families/interfaces that give large main-memory capacity and bandwidth.
 ROM/Flash/NVM are non-volatile memories that keep data without power.
 The memory controller converts SoC requests into legal memory commands.
 Scheduling, banking and QoS - Quality of Service decide latency, bandwidth and fairness.
@@ -199,70 +181,6 @@ Memory technology affects:
 8. **Memory-controller complexity**: DRAM, **LPDDR - Low-Power Double Data Rate**, NAND Flash and other Flash memories need controllers for timing, refresh, **ECC - Error Correction Code** or wear management.
 
 Exam line: **Memory technology selection determines the SoC's speed, power, die area, cost and memory-controller complexity.**
-
-<a id="topic-1-beginner-foundation"></a>
-
-### Beginner Foundation: What Memory Means In An SoC
-
-Before learning SRAM, DRAM, Flash and other technologies, first understand what memory is doing in a chip.
-
-An **SoC - System on Chip** contains processing blocks that perform work: CPU cores, GPU cores, DSP blocks, AI accelerators, DMA controllers and peripheral controllers. These blocks constantly need information. They need program instructions, input data, temporary results, configuration values, status flags, packet data, audio/video samples and persistent firmware. **Memory** is the hardware storage system that holds this information.
-
-At the smallest level, memory stores **bits**. A bit is a binary value: 0 or 1. Eight bits usually form one **byte**. Processors normally access memory using **addresses**. An address is like a numbered location. When the CPU wants data, it sends an address and a read request. When the CPU wants to store data, it sends an address, write data and a write request.
-
-Simple idea:
-
-```text
-Address = where the data is located
-Read    = get data from that address
-Write   = store data at that address
-```
-
-In a real SoC, memory is not one big box. It is divided into many types because every type has different strengths. Some memories are very fast but small. Some are large but slower. Some lose data without power. Some retain data after power is removed. Some are inside the SoC die. Some are outside the SoC package or on the board. Some can be read and written many times per second. Some are good for storage but bad for frequent writes.
-
-The most important memory properties are:
-
-- **Latency**: how long one access takes. Low latency means the CPU waits less.
-- **Bandwidth**: how much data can be transferred per second. High bandwidth matters for video, AI, graphics and networking.
-- **Capacity**: how much data can be stored. Storage memory needs high capacity.
-- **Density**: how many bits fit in a given silicon area. Higher density usually reduces cost per bit.
-- **Volatility**: whether the data disappears when power is removed.
-- **Endurance**: how many write/erase cycles the memory can tolerate before wearing out.
-- **Retention**: how long the memory can keep data correctly.
-- **Power**: active access power, leakage power and standby/refresh power.
-- **Area**: how much chip silicon is consumed.
-- **Controller complexity**: how much extra hardware/firmware is needed to use the memory correctly.
-
-This is why the memory question is really a tradeoff question. If the examiner asks "memory technology", they are asking: **Which memory type should be used for which job, and why?**
-
-<a id="topic-1-memory-roles"></a>
-
-### Working Memory, Main Memory And Storage Memory
-
-A beginner mistake is to call every memory "RAM". In SoC design, memories have different jobs.
-
-**Working memory** is used while the chip is actively computing. It stores variables, stack data, temporary buffers and intermediate results. SRAM, caches, TCM and DRAM are working memories.
-
-**Main memory** is the large memory used by the processor and software during normal operation. In large SoCs, main memory is usually off-chip DRAM such as DDR SDRAM or LPDDR.
-
-**Storage memory** keeps code and data even when the system is powered off. ROM, NOR Flash, NAND Flash, eMMC and UFS are storage or persistent memories.
-
-Use this simple memory-role map:
-
-| Role In SoC | Usually Used Memory | Why That Memory Is Suited |
-|---|---|---|
-| Immediate CPU operands | Register file | Extremely fast and close to the execution unit |
-| Fast average instruction/data access | SRAM cache | Low latency and hardware-managed reuse of recent data |
-| Deterministic real-time code/data | TCM or scratchpad SRAM | Predictable latency without cache-miss uncertainty |
-| Small stream buffering | FIFO or local SRAM | Preserves order and absorbs speed mismatch |
-| Large runtime program/data memory | DRAM / DDR / LPDDR | High capacity and lower cost per bit than SRAM |
-| Low-power mobile main memory | LPDDR | DRAM capacity with mobile power modes and lower-voltage operation |
-| Extreme accelerator bandwidth | HBM | Very wide, close, stacked DRAM interface gives very high bandwidth |
-| First boot code | ROM or NOR Flash | Non-volatile and readable immediately after reset |
-| Firmware and execute-in-place code | NOR Flash | Good random reads and memory-mapped code access |
-| Large persistent storage | NAND Flash, eMMC, UFS | High density and low cost per bit |
-
-Exam line: **Memory technology is selected according to the job: SRAM for speed, DRAM for capacity, ROM/NOR for boot code, NAND/eMMC/UFS for storage, LPDDR for low power and HBM for bandwidth.**
 
 ### Figure 1: Memory Technology Pyramid
 
@@ -379,66 +297,6 @@ The lecture material emphasizes that putting memory on the die improves accessib
 ```
 
 Figure source: look at [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22 because those slides explain why designers choose between on-die ROM/RAM and large off-die memory. This figure is useful because it connects memory technology to physical SoC organization.
-
-<a id="topic-1-suited-roles"></a>
-
-### Why Each Memory Is Suited To Its Role
-
-This section is the key to understanding Topic 1. Do not memorize only "SRAM is fast" and "DRAM is dense". Always connect the physical behavior of the memory to the SoC design reason.
-
-#### 1. Register File Is Suited For Immediate Computation
-
-A **register file** is inside the processor or accelerator. It is used for the values that the execution unit needs right now. For example, if an ALU - Arithmetic Logic Unit adds two numbers, those numbers are usually read from registers, not from DRAM.
-
-It is suited for this role because it can be built with very fast, often multi-port storage close to the datapath. But it is extremely expensive in area, so it is only used for a small number of values.
-
-#### 2. SRAM Is Suited For Fast On-Chip Memory
-
-**SRAM - Static Random Access Memory** stores data using latch-based cells. Because the cell holds its state while power is present, it does not need refresh. That makes it fast and simple to access compared with DRAM.
-
-It is suited for caches, scratchpads, TCM, FIFOs and local buffers because these structures need low latency, frequent reads/writes and predictable behavior. It is not suited for huge main memory because each SRAM bit uses more transistors and more silicon area than DRAM.
-
-#### 3. Cache SRAM Is Suited For Average Performance
-
-A **cache** is SRAM used automatically by hardware to keep recently used instructions or data close to the CPU. It is suited when programs show locality: recently used addresses are likely to be reused, and nearby addresses are likely to be accessed soon.
-
-Cache is excellent for average performance because many accesses become cache hits. But it is less ideal for strict real-time deadlines because a cache miss may take much longer than a hit.
-
-#### 4. Scratchpad And TCM Are Suited For Predictable Real-Time Access
-
-**Scratchpad memory** and **TCM - Tightly Coupled Memory** are SRAM-based memories controlled by software or system configuration. They are suited for real-time code because the access time is more predictable than cache.
-
-For example, an interrupt handler, motor-control loop or DSP kernel may be placed in TCM so the processor does not unexpectedly wait for a cache miss or off-chip DRAM access.
-
-#### 5. DRAM Is Suited For Large Main Memory
-
-**DRAM - Dynamic Random Access Memory** stores each bit as charge on a capacitor. A capacitor-based cell is much smaller than an SRAM latch, so DRAM gives much higher density and lower cost per bit.
-
-It is suited for large main memory because software, operating systems, graphics, AI workloads and applications need much more memory than can fit economically in SRAM. The cost is that DRAM is slower, needs refresh, and needs a controller to obey timing commands.
-
-#### 6. LPDDR Is Suited For Mobile And Low-Power Main Memory
-
-**LPDDR - Low-Power Double Data Rate** is DRAM optimized for power-sensitive systems. It is suited for smartphones, tablets, automotive embedded platforms and battery-powered SoCs because it provides DRAM capacity and bandwidth while reducing operating and standby power.
-
-The tradeoff is that LPDDR still needs a specialized controller/PHY and power-state management. It is not just "normal RAM"; it is a power-optimized DRAM interface family.
-
-#### 7. HBM Is Suited For Extreme Bandwidth
-
-**HBM - High Bandwidth Memory** uses stacked DRAM dies and a very wide interface placed close to the processor or accelerator. It is suited for GPUs, AI accelerators and high-performance computing chips where thousands of operations need data every cycle.
-
-HBM is not selected mainly for low cost. It is selected when bandwidth and energy per transferred bit are more important than package simplicity and cost.
-
-#### 8. ROM And NOR Flash Are Suited For Boot
-
-When the SoC is powered on, SRAM and DRAM do not contain valid program code because they are volatile. The CPU needs a non-volatile place to fetch the first instructions. This is why SoCs use **ROM - Read Only Memory** or **NOR Flash** for boot code.
-
-ROM is suited when the code is fixed permanently. NOR Flash is suited when the system needs non-volatile firmware that can be updated and read randomly. NOR can also support **XIP - Execute In Place**, where the CPU executes code directly from Flash.
-
-#### 9. NAND Flash, eMMC And UFS Are Suited For Large Storage
-
-**NAND Flash** is optimized for high density and low cost per bit. It is suited for storing operating-system images, applications, logs, media and user data. It is not ideal for direct instruction execution because it is page/block-oriented and needs management.
-
-**eMMC - embedded MultiMediaCard** and **UFS - Universal Flash Storage** are managed NAND storage solutions. They are suited when the SoC designer wants Flash storage without manually handling every raw NAND detail. The internal controller handles tasks such as ECC, bad-block management and wear leveling.
 
 ### SRAM - Static Random Access Memory
 
@@ -863,275 +721,34 @@ ROM is small, reliable and non-volatile, but inflexible. If boot ROM code has a 
 
 ### NOR Flash
 
-**NOR Flash** is a type of **non-volatile Flash memory** used mainly for boot code, firmware and code storage. **Non-volatile** means it keeps data even when power is removed. This is why it is useful for storing the first program that runs when the SoC powers on.
-
-The name **NOR** comes from the internal memory-cell connection style, which resembles NOR-gate-style organization. The important exam idea is not the transistor-level circuit detail, but the behavior: **NOR Flash supports efficient random read access**, so the processor can read instructions from different addresses without first loading a whole large block into RAM.
-
-In an SoC system, NOR Flash is usually not used as the main working memory. It is used as **program/firmware storage**. At reset, the processor must fetch its first instructions from somewhere stable. Since SRAM and DRAM lose contents when power is off, boot code must come from ROM or non-volatile Flash. NOR Flash is useful here because it can be read like a memory-mapped device.
-
-Important definition:
-
-```text
-NOR Flash = non-volatile memory with good random read access,
-commonly used for boot code, firmware and execute-in-place code.
-```
-
-#### Why NOR Flash Is Used For Boot
-
-When an SoC is powered on, the CPU needs a reset vector or boot address. That address must contain valid instructions before DRAM is initialized. NOR Flash is suitable because:
-
-- it retains code without power,
-- it supports fast random reads,
-- it can be memory-mapped into the processor address space,
-- it can support **XIP - Execute In Place**,
-- it is reliable for small boot and firmware images.
-
-**XIP - Execute In Place** means the CPU can execute code directly from NOR Flash instead of first copying the code into RAM. This is useful in embedded systems where boot time, simplicity and small memory footprint matter.
+**NOR Flash** is non-volatile memory often used for boot code and firmware. It supports random read access better than NAND and can support execute-in-place in many embedded systems.
 
 Key characteristics:
 
-- **Non-volatile**: keeps data without power.
-- **Good random read behavior**: individual addresses can be read efficiently compared with NAND Flash.
-- **Memory-mapped code access**: can appear in the CPU address map like a readable memory region.
-- **Suitable for boot and firmware**: stores reset code, bootloader and firmware image.
-- **Supports XIP - Execute In Place** in many systems: code can run directly from Flash.
-- **More expensive per bit than NAND Flash**: not ideal for very large storage.
-- **Slower write/erase compared with RAM**: not suitable for frequent high-speed writes.
-- **Limited write/erase endurance**: Flash cells wear out after many program/erase cycles.
-- **Usually smaller capacity than NAND**: used for code storage, not mass storage.
+- Non-volatile.
+- Good random read behavior.
+- Suitable for boot and code storage.
+- More expensive per bit than NAND.
+- Slower write/erase compared with RAM.
+- Limited write/erase endurance.
 
-#### How NOR Flash Is Different From RAM
-
-**RAM - Random Access Memory**, such as SRAM or DRAM, is used for active computation because it supports fast reads and writes. But most RAM is volatile, so it loses data when power is removed.
-
-NOR Flash is the opposite in purpose. It is non-volatile, so it stores code permanently, but writes and erases are much slower than RAM. Therefore, firmware may be stored in NOR Flash, while variables, stack, heap and frequently changing data are placed in SRAM or DRAM.
-
-```text
-NOR Flash = stores code permanently, slower writes, non-volatile
-RAM       = stores working data temporarily, fast reads/writes, usually volatile
-```
-
-#### How NOR Flash Is Different From NAND Flash
-
-Both NOR Flash and NAND Flash are non-volatile, but they are optimized for different jobs.
-
-**NOR Flash** is better for random reads and code execution. It is used for boot code and firmware. It is more expensive per bit and usually lower density.
-
-**NAND Flash** is better for high-density storage. It stores large files, operating-system images, media and user data. But NAND usually needs a controller for **ECC - Error Correction Code**, bad-block management and wear leveling. It is not as convenient for direct code execution.
-
-| Point | NOR Flash | NAND Flash |
-|---|---|---|
-| Best for | Boot code, firmware, XIP | Large storage, files, OS images |
-| Read behavior | Good random read | Better sequential/page-based access |
-| Density | Lower than NAND | Higher than NOR |
-| Cost per bit | Higher | Lower |
-| Execute directly? | Often possible through XIP | Usually not directly; code is copied to RAM |
-| Controller need | Simpler | More complex: ECC, bad blocks, wear leveling |
-
-#### Where NOR Flash Sits In The Boot Flow
-
-Typical boot flow:
-
-```text
-Power ON / Reset
-      |
-      v
-CPU fetches reset vector from ROM or NOR Flash
-      |
-      v
-Bootloader starts
-      |
-      v
-Initialize clocks, SRAM, DRAM controller and peripherals
-      |
-      v
-Load larger firmware/OS from Flash/storage if needed
-      |
-      v
-Run application
-```
-
-If NOR Flash supports XIP, some code may continue running directly from NOR Flash. If the application needs higher speed, the bootloader may copy code from NOR Flash into SRAM or DRAM and execute from there.
-
-#### Why NOR Flash Is Not Used For Everything
-
-NOR Flash is excellent for boot and firmware, but it is not used as general-purpose main memory because:
-
-- writes are slow,
-- erases happen in blocks/sectors,
-- endurance is limited,
-- cost per bit is higher than NAND,
-- density is lower than NAND,
-- SRAM/DRAM are much faster for active data.
-
-So a typical SoC may use:
-
-```text
-ROM or NOR Flash -> first boot code
-SRAM             -> stack, variables, small fast buffers
-DRAM/LPDDR       -> large runtime memory
-NAND/eMMC/UFS    -> mass storage
-```
-
-Exam line: **NOR Flash is non-volatile memory with good random-read behavior, commonly used for boot code and firmware because it can be memory-mapped and may support execute-in-place, but it is slower to write, endurance-limited and more expensive per bit than NAND Flash.**
+NOR Flash is used when the system must start quickly and read code reliably. It is common for boot code, firmware, BIOS-like storage, automotive controllers and embedded systems.
 
 ### NAND Flash
 
-**NAND Flash** is a type of **non-volatile Flash memory** optimized for **high storage density** and **low cost per bit**. Non-volatile means it keeps data even when power is removed. NAND Flash is mainly used for **mass storage**, not for direct instruction execution.
-
-The name **NAND** comes from the internal memory-cell connection style, which resembles NAND-gate-style organization. The key exam idea is this: NAND Flash stores a lot of data cheaply, but it is accessed in larger chunks and needs more management than NOR Flash.
-
-Important definition:
-
-```text
-NAND Flash = dense non-volatile memory used for mass storage,
-such as OS images, apps, media, logs and user data.
-```
-
-#### Why NAND Flash Exists
-
-An SoC often needs two different kinds of non-volatile memory:
-
-1. **Small reliable boot/code memory**: this may be ROM or NOR Flash.
-2. **Large storage memory**: this is usually NAND Flash or managed NAND such as eMMC/UFS.
-
-NOR Flash is good for random code reads, but it is too expensive per bit for very large storage. NAND Flash solves the capacity problem. It can store large amounts of data at lower cost, which is why it is used in phones, SSDs, memory cards, embedded storage and many consumer devices.
-
-Why NAND Flash is used:
-
-- It gives high storage density.
-- It has lower cost per bit than NOR Flash.
-- It is non-volatile.
-- It is suitable for large firmware images, operating systems, applications, logs and user data.
-- It is widely available in managed forms such as **eMMC - embedded MultiMediaCard** and **UFS - Universal Flash Storage**.
-
-#### Page And Block-Based Access
-
-NAND Flash is not accessed like SRAM or NOR Flash. It is organized into **pages** and **blocks**.
-
-- A **page** is the unit normally used for reading and programming/writing.
-- A **block** is a group of pages and is the unit normally used for erase.
-
-This creates an important rule:
-
-```text
-NAND can read/program pages,
-but erase usually happens at block level.
-```
-
-Example:
-
-```text
-Block
- ├── Page 0
- ├── Page 1
- ├── Page 2
- ├── ...
- └── Page N
-```
-
-If software wants to update a small piece of data, the NAND controller may need to manage page writes, block erases and data movement. This is why NAND needs a controller and management algorithms.
-
-#### Why NAND Is Not Used For Direct Code Execution
-
-NAND Flash is usually not ideal for **XIP - Execute In Place**. XIP means executing code directly from non-volatile memory. NOR Flash can support this more easily because it has better random read behavior and can be memory-mapped for instruction fetch.
-
-NAND Flash is more storage-oriented:
-
-- random reads are slower than NOR,
-- reads are page-based,
-- bad blocks must be handled,
-- ECC is needed,
-- code often must be copied into RAM before execution.
-
-Typical boot idea:
-
-```text
-ROM / NOR Flash starts boot
-      |
-      v
-Bootloader initializes SRAM/DRAM
-      |
-      v
-Bootloader copies OS/firmware from NAND/eMMC/UFS to RAM
-      |
-      v
-CPU executes from RAM
-```
-
-This is why the short line says: **NAND is used for storage rather than direct code execution.**
+**NAND Flash** is non-volatile memory optimized for high density and low cost per bit. It is used for storage rather than direct code execution.
 
 Key characteristics:
 
-- **Very high density**: stores many bits in a small area.
-- **Low cost per bit**: cheaper than NOR Flash for large storage.
-- **Non-volatile**: retains data without power.
-- **Page/block-based access**: reads and programs pages, erases blocks.
-- **Slower random read than NOR**: less suitable for direct instruction fetch.
-- **Writes and erases are more complex**: erase must occur before rewriting many Flash cells.
-- **Limited endurance**: each block can tolerate only a limited number of program/erase cycles.
-- **Requires ECC - Error Correction Code**: raw NAND can have bit errors, so error correction is necessary.
-- **Requires bad-block management**: some blocks may be bad from manufacturing or become bad over time.
-- **Requires wear leveling**: writes must be spread across blocks so the same block is not worn out too quickly.
-- **Often managed through eMMC - embedded MultiMediaCard, UFS - Universal Flash Storage or SSD controllers**: these controllers hide much of the NAND complexity from the SoC.
-
-#### ECC - Error Correction Code In NAND
-
-NAND Flash is dense, but density comes with reliability challenges. Some bits may read incorrectly due to noise, wear, retention loss or cell interference. Therefore, NAND systems use **ECC - Error Correction Code**.
-
-ECC adds extra check bits so the controller can:
-
-- detect bit errors,
-- correct correctable errors,
-- report uncorrectable errors,
-- improve storage reliability.
-
-Exam line: **ECC is essential in NAND Flash because dense Flash cells are error-prone and the controller must detect and correct bit errors.**
-
-#### Bad-Block Management
-
-NAND Flash may contain bad blocks even when new. More blocks may become bad as the memory is used. Therefore, the controller maintains a bad-block table and avoids using those blocks.
-
-Without bad-block management, data could be written into unreliable regions and become corrupted.
-
-Exam line: **Bad-block management prevents the system from storing data in NAND blocks that are defective or have become unreliable.**
-
-#### Wear Leveling
-
-Flash memory wears out because program/erase cycles stress the memory cells. If the same block is erased and written repeatedly, it will fail earlier than other blocks.
-
-**Wear leveling** spreads writes across many blocks so that no small set of blocks wears out too quickly.
-
-Example:
-
-```text
-Bad approach: write logs repeatedly to the same block.
-Better approach: rotate log writes across many blocks.
-```
-
-Exam line: **Wear leveling increases NAND lifetime by distributing program/erase cycles across many physical blocks.**
-
-#### Managed NAND: eMMC And UFS
-
-Raw NAND is difficult to use directly because the SoC must handle ECC, bad blocks, wear leveling, page mapping and erase management. Many systems therefore use managed NAND devices.
-
-**eMMC - embedded MultiMediaCard** is a managed NAND storage solution with an internal controller. It is common in embedded systems.
-
-**UFS - Universal Flash Storage** is a higher-performance managed Flash storage interface, common in phones and high-performance embedded devices.
-
-Managed NAND hides much of the raw NAND complexity:
-
-```text
-SoC sends read/write storage commands
-      |
-      v
-eMMC/UFS controller handles NAND management internally
-      |
-      v
-NAND Flash stores the actual data
-```
-
-#### NAND Cell Density Types
+- Very high density.
+- Low cost per bit.
+- Non-volatile.
+- Page/block-based access.
+- Slower random read than NOR.
+- Writes and erases are more complex.
+- Limited endurance.
+- Requires **ECC - Error Correction Code**, bad-block management and wear leveling.
+- Often managed through controllers in **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** or SSDs.
 
 NAND stores more bits per cell in variants:
 
@@ -1140,26 +757,7 @@ NAND stores more bits per cell in variants:
 - **TLC - Triple-Level Cell**: three bits per cell; higher density, lower endurance/performance.
 - **QLC - Quad-Level Cell**: four bits per cell; very high density, stronger latency/endurance tradeoff.
 
-The trend is:
-
-```text
-More bits per cell -> higher density and lower cost per bit
-More bits per cell -> lower endurance, slower writes and harder error correction
-```
-
-#### NAND Flash Vs NOR Flash
-
-| Point | NAND Flash | NOR Flash |
-|---|---|---|
-| Best use | Large storage | Boot code and firmware |
-| Access style | Page/block-oriented | Better random read |
-| Density | Very high | Lower |
-| Cost per bit | Low | Higher |
-| Direct execution | Usually not preferred | Often supports XIP |
-| Controller complexity | High: ECC, bad blocks, wear leveling | Simpler |
-| Example use | eMMC, UFS, SSD, media storage | Boot Flash, firmware, BIOS-like code |
-
-Exam line: **NAND Flash is dense non-volatile storage used for mass data, but it needs page/block management, ECC, bad-block management and wear leveling; NOR Flash is better for boot and direct code reads.**
+Exam line: **NAND Flash gives storage density; NOR Flash gives better code-read and boot behavior.**
 
 ### pSRAM, nvSRAM And F-RAM
 
@@ -1198,208 +796,37 @@ These technologies are important because they may reduce leakage, enable instant
 | NAND Flash | No | good sequential/storage | Very high | ECC/wear management | mass storage, eMMC/UFS | controller required, endurance |
 | FRAM/MRAM/ReRAM | No | varies | varies | write energy/endurance tradeoffs | embedded NVM, logs, instant-on | maturity/cost/process availability |
 
-<a id="topic-1-selection"></a>
-
 ### Memory Technology Selection In SoC
 
-SoC designers choose memory technology by asking a practical question:
-
-```text
-What kind of data is this, how fast must it be accessed,
-how much of it is needed, and must it survive power-off?
-```
-
-The answer decides the memory technology.
-
-#### 1. If The Data Is Needed Immediately
-
-Use **register files** or very small local SRAM.
-
-This is the case for CPU operands, accelerator partial sums, DSP coefficients being used in the current cycle, status flags and pipeline state. These memories must be extremely close to the logic because every extra cycle can reduce processor throughput.
-
-Why suited:
-
-- fastest access,
-- close to execution logic,
-- can support multiple reads/writes per cycle,
-- avoids waiting for larger memory.
-
-Why not used for everything:
-
-- too small,
-- too expensive in silicon area,
-- not suitable for large program/data storage.
-
-#### 2. If The Data Is Frequently Reused
-
-Use **SRAM cache**.
-
-This is common for CPU instructions, stack data, array data and recently accessed memory lines. Cache is suitable because programs often reuse the same data or nearby data. The cache controller automatically keeps useful copies near the processor.
-
-Why suited:
-
-- improves average memory access time,
-- reduces off-chip DRAM traffic,
-- hides main-memory latency,
-- uses SRAM speed for frequently used data.
-
-Why not always enough:
-
-- cache misses are slower,
-- cache behavior may be unpredictable,
-- coherence is needed in multi-core systems,
-- cache consumes area and power.
-
-#### 3. If The Data Has A Real-Time Deadline
-
-Use **TCM - Tightly Coupled Memory**, scratchpad memory or local SRAM buffers.
-
-This is common for interrupt handlers, motor control, sensor loops, communication deadlines, safety checks and DSP kernels. In these cases, predictable timing is more important than average speed. Cache may be fast on average, but a miss can break a real-time deadline.
-
-Why suited:
-
-- deterministic access latency,
-- software can decide what is stored there,
-- avoids cache-miss uncertainty,
-- useful for real-time and safety-critical code.
-
-Why not used for everything:
-
-- limited capacity,
-- requires software/compiler planning,
-- not automatically managed like cache.
-
-#### 4. If The System Needs Large Runtime Memory
-
-Use **DRAM - Dynamic Random Access Memory**, usually as **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate**.
-
-This is the main working memory for operating systems, large applications, graphics buffers, AI tensors, multimedia buffers and large data structures. SRAM cannot provide this capacity economically, so DRAM is used.
-
-Why suited:
-
-- high density,
-- lower cost per bit than SRAM,
-- large available capacity,
-- supports burst transfers and bank-level parallelism.
-
-Why it needs controller support:
-
-- DRAM needs refresh,
-- rows must be activated and precharged,
-- timing rules must be obeyed,
-- banks must be scheduled,
-- PHY training/calibration may be needed for high-speed DDR/LPDDR.
-
-#### 5. If The System Is Battery Or Power Sensitive
-
-Use **LPDDR - Low-Power Double Data Rate** for main memory, plus aggressive on-chip SRAM buffering and power modes.
-
-LPDDR is suitable for mobile and embedded SoCs because off-chip memory access can consume significant energy. LPDDR reduces power through low-voltage operation and low-power states such as self-refresh or deep power-down modes.
-
-Why suited:
-
-- lower-power DRAM operation,
-- useful standby modes,
-- good capacity for mobile systems,
-- suitable for package-constrained devices.
-
-Why not always selected:
-
-- still needs a complex controller and PHY,
-- power-state transitions must be managed,
-- may not be the cheapest or simplest choice for every system.
-
-#### 6. If The System Is Bandwidth Limited
-
-Use wider memory systems, multiple channels, on-chip SRAM tiling, or **HBM - High Bandwidth Memory**.
-
-AI accelerators, GPUs and high-performance networking chips may perform enough computation that ordinary memory bandwidth becomes the bottleneck. HBM is suited because it provides a very wide, close memory interface using stacked DRAM and advanced packaging.
-
-Why suited:
-
-- very high bandwidth,
-- good energy per transferred bit for heavy data movement,
-- keeps parallel compute units fed,
-- reduces long board-level memory traces.
-
-Why not used everywhere:
-
-- high package cost,
-- design complexity,
-- not necessary for low-bandwidth microcontrollers or simple embedded SoCs.
-
-#### 7. If The Data Must Exist At Power-On
-
-Use **ROM - Read Only Memory** or **NOR Flash**.
-
-When the chip resets, volatile memories such as SRAM and DRAM do not contain valid boot code. The CPU must fetch the first instruction from a non-volatile memory region. This is why boot ROM and NOR Flash are important.
-
-Why suited:
-
-- retains code without power,
-- available at reset,
-- can store bootloader and secure boot code,
-- NOR can support random reads and XIP - Execute In Place.
-
-Why not used for active working memory:
-
-- writes are slow or impossible,
-- erase/program cycles are limited,
-- lower density than NAND for large storage,
-- not suitable for stack/heap variables that change frequently.
-
-#### 8. If The Data Is Large Persistent Storage
-
-Use **NAND Flash**, **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** or SSD-like storage.
-
-This is used for operating-system images, application files, user data, logs, media and large firmware images. NAND is suited because it stores many bits cheaply.
-
-Why suited:
-
-- high density,
-- low cost per bit,
-- non-volatile,
-- widely available as managed storage.
-
-Why controller management is required:
-
-- NAND has page/block access rules,
-- erase happens at block level,
-- blocks wear out after program/erase cycles,
-- ECC is needed to correct bit errors,
-- bad blocks must be avoided,
-- wear leveling spreads writes across the device.
-
-#### Example Design Choices
+SoC designers choose memory technology based on workload and constraints.
 
 For a small microcontroller SoC:
 
-- ROM or NOR Flash stores boot/program code because it is non-volatile.
-- SRAM stores stack, heap, variables and buffers because it is fast and simple.
-- TCM may store interrupt handlers because timing must be predictable.
-- Off-chip DRAM may be absent because the system does not need huge capacity.
+- ROM or Flash stores program code.
+- SRAM stores stack, heap and variables.
+- small cache may not be needed.
+- low power and deterministic latency matter.
 
 For a smartphone SoC:
 
-- boot ROM starts secure boot because it is trusted and non-volatile.
-- SRAM caches and TCM support CPU, GPU, DSP and modem workloads.
+- boot ROM starts the system.
+- SRAM caches and TCM support processors and DSPs.
 - LPDDR provides large low-power main memory.
-- UFS or eMMC stores the operating system, apps, photos and user data.
+- NAND/UFS stores OS, apps, media and user data.
 
 For an AI accelerator:
 
-- SRAM buffers hold activations, weights and partial sums near compute arrays.
-- HBM or LPDDR supplies large external bandwidth.
-- DMA - Direct Memory Access engines move data without constant CPU involvement.
-- memory reuse is critical because moving data often costs more energy than computing on it.
+- SRAM buffers hold weights and activations near compute units.
+- HBM or LPDDR provides high external bandwidth.
+- DMA and memory controllers feed compute arrays.
+- memory bandwidth and data reuse dominate performance.
 
 For a networking SoC:
 
-- SRAM or QDR SRAM stores fast packet buffers and lookup tables.
-- FIFOs absorb bursty traffic between interfaces and processing blocks.
-- DRAM stores large packet queues.
+- SRAM/QDR SRAM may be used for fast packet buffers and tables.
+- DRAM stores large queues and packet memory.
 - Flash stores firmware.
-- low-latency random access matters because packet decisions must be made quickly.
+- memory latency and random transaction rate are important.
 
 ### Relationship With Memory Controller Architecture
 
@@ -1452,60 +879,35 @@ Do not write:
 
 ### Final Exam-Ready Answer
 
-Memory technology in SoC design means the physical and architectural type of memory used to store instructions, data, temporary results, buffers, firmware and persistent information. An SoC does not use a single memory technology because different data has different requirements. The CPU needs extremely fast operands, real-time software needs predictable access, applications need large working memory, and the system needs non-volatile storage for boot code and files. Therefore, memory technology selection is one of the central tradeoffs in SoC design.
+Memory technology in SoC design refers to the different physical and architectural memory types used to store instructions, data, buffers, firmware and persistent information. A modern SoC does not use only one memory. It uses a hierarchy of technologies such as registers, SRAM caches, scratchpads, ROM, embedded memory, off-chip DRAM, **LPDDR - Low-Power Double Data Rate** and Flash. The choice of memory technology affects performance, area, power, cost, bandwidth, latency, reliability and memory-controller complexity.
 
-The basic idea is that memory stores bits at addresses. A processor or hardware block reads from an address to get data and writes to an address to update data. However, all storage locations cannot be built using the same memory cell. A very fast memory cell usually consumes more area and power. A dense memory cell stores many bits cheaply but is usually slower or harder to control. A non-volatile memory keeps data without power but may have slower write/erase operation and limited endurance. Hence, SoCs use a hierarchy of register files, SRAM, DRAM, ROM and Flash-based storage.
+The fastest memories are register files and SRAM. SRAM is volatile and stores data using latch-based cells, so it does not need refresh. It has low latency and high random-access speed, which makes it suitable for caches, scratchpads, tightly coupled memories, FIFOs and small on-chip buffers. However, SRAM has large area per bit and high cost per bit, so it cannot economically provide very large memory capacity.
 
-The fastest storage is the **register file**, which is inside the processor or accelerator datapath. It is suited for immediate computation because arithmetic and logic units need operands every cycle. Register files are extremely fast but very small and expensive per bit, so they cannot be used for large program or data storage.
+DRAM stores data as charge on a capacitor and therefore needs periodic refresh. It is denser and cheaper per bit than SRAM but slower and more complex to control. In SoCs, large main memory is usually implemented using off-chip **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate** DRAM because very large memory capacity cannot be placed efficiently on the logic die. LPDDR is especially useful in mobile and low-power SoCs because it operates at lower voltage and includes power-saving modes. **eDRAM - Embedded Dynamic Random Access Memory** is a compromise technology that offers higher density than SRAM on-chip, but it needs refresh and is harder to integrate with logic processes.
 
-The next important technology is **SRAM - Static Random Access Memory**. SRAM is volatile memory that stores each bit using latch-based cells. It is called static because it does not need periodic refresh while power is supplied. SRAM gives low latency and good random-access behavior, so it is suited for on-chip caches, scratchpad memories, TCM - Tightly Coupled Memory, FIFOs - First-In First-Out buffers, packet buffers and lookup tables. The reason SRAM is suited for these uses is that these blocks need frequent fast reads and writes close to the processor or accelerator. The limitation is that SRAM uses more transistors per bit than DRAM, so it occupies large die area and has high cost per bit.
+Non-volatile memories are used for boot code, firmware and persistent storage. ROM stores fixed code such as reset vectors and bootloaders, but it is not flexible after fabrication. NOR Flash is suitable for boot code, firmware and execute-in-place applications because it has good random read behavior. NAND Flash provides much higher density and lower cost per bit, so it is used for mass storage such as **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** and SSDs. However, NAND requires a controller for **ECC - Error Correction Code**, bad-block management and wear leveling.
 
-SRAM can be used in two important architectural ways. In a **cache**, hardware automatically stores recently used instructions or data to improve average memory access time. Cache is useful because programs show locality. In **scratchpad memory** or **TCM**, software or system configuration decides what is stored there. Scratchpad and TCM are useful for real-time systems because their latency is predictable, while cache latency can vary because of cache hits and misses.
+The main memory-technology tradeoffs are speed versus density, capacity versus area, volatility versus persistence, bandwidth versus power and simplicity versus controller complexity. On-chip SRAM gives fast and predictable access but consumes die area. Off-chip DRAM gives large capacity but adds latency, pins, I/O power and a complex controller. Flash gives non-volatile storage but has limited write endurance and slower erase/write behavior. Therefore, SoC memory design combines multiple technologies to satisfy performance, power and cost requirements.
 
-For large runtime memory, SoCs use **DRAM - Dynamic Random Access Memory**. DRAM stores a bit as charge on a capacitor. This cell is much smaller than an SRAM latch, so DRAM provides higher density and lower cost per bit. This makes DRAM suited for main memory: operating-system memory, large applications, graphics buffers, AI data, multimedia buffers and general program data. However, capacitor charge leaks away, so DRAM needs refresh. It also requires commands such as activate, read, write, precharge and refresh. Therefore, a DRAM-based system needs a memory controller and PHY - Physical Layer.
-
-Modern SoCs usually access external DRAM through **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory**, **LPDDR - Low-Power Double Data Rate** or **HBM - High Bandwidth Memory**. DDR SDRAM is suited for general high-capacity main memory because it transfers data on both clock edges and supports burst transfers. LPDDR is suited for mobile and embedded SoCs because it provides DRAM capacity with lower-power operation and power-saving modes. HBM is suited for GPUs, AI accelerators and high-performance systems because stacked DRAM and a very wide interface provide extremely high bandwidth, although cost and package complexity increase.
-
-Some SoCs may use **eDRAM - Embedded Dynamic Random Access Memory** as an intermediate technology. eDRAM is denser than SRAM and can be useful for large on-chip buffers or caches, but it still needs refresh and is harder to integrate with standard logic processes. Therefore, it is a compromise between SRAM speed and DRAM density, not a universal replacement for either.
-
-The SoC also needs non-volatile memory because volatile memories lose data when power is removed. **ROM - Read Only Memory** stores fixed boot code, reset vectors or permanent tables. It is suited for first-stage boot because it is available immediately after reset and cannot be accidentally erased. The limitation is that ROM is inflexible after fabrication.
-
-**NOR Flash** is non-volatile memory suited for firmware, bootloaders and execute-in-place code. It has good random read behavior and can often be memory-mapped into the processor address space. This means the CPU can fetch instructions directly from NOR Flash in many embedded systems. NOR is not used for mass storage because it has lower density and higher cost per bit than NAND Flash, and write/erase operations are slower than RAM.
-
-**NAND Flash** is non-volatile memory suited for large persistent storage. It is used in storage devices such as **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** and SSDs because it provides high density and low cost per bit. NAND is not normally used for direct code execution because it is page/block-oriented and needs management. A NAND controller must handle **ECC - Error Correction Code**, bad-block management, wear leveling, mapping and erase management.
-
-The main tradeoffs in memory technology are speed versus density, capacity versus area, volatility versus persistence, bandwidth versus power, endurance versus write frequency and simplicity versus controller complexity. On-chip SRAM is fast and predictable but expensive in area. Off-chip DRAM is large and cheaper per bit but has higher latency, I/O power and controller complexity. ROM and Flash preserve data without power but are slower or less flexible for writes. Thus, a good SoC memory system uses each technology where it is strongest: registers and SRAM near computation, DRAM/LPDDR/HBM for large runtime memory, and ROM/NOR/NAND-based memory for boot and persistent storage.
-
-Therefore, memory technology selection directly affects SoC performance, power, cost, die area, boot behavior and memory-controller architecture. The memory controller is simple for SRAM, timing-oriented for DRAM and management-heavy for NAND Flash. This is why memory technology is not only a storage topic; it is a complete SoC architecture decision.
+Thus, memory technology selection is a central part of SoC design. It determines not only where data is stored, but also how the processor, interconnect, DMA engines and memory controller are designed. A good SoC memory system uses fast SRAM close to computation, dense DRAM for main memory and non-volatile memory for boot and storage.
 
 ### Short 10-Mark Exam Answer
 
-Memory technology in SoC design means the physical and architectural type of memory used to store instructions, data, buffers, firmware and persistent information. Different technologies are required because no single memory is best in speed, capacity, power, cost, area and non-volatility.
+Memory technology in SoC design means the type of memory used for storing program code, data, buffers and persistent information. Different memory technologies are used because no single memory is best in speed, density, power, area and cost.
 
-Register files are used inside processors for immediate operands because they are the fastest but very small. **SRAM - Static Random Access Memory** is volatile, fast and does not require refresh, so it is used for caches, scratchpads, TCM - Tightly Coupled Memory, FIFOs and small on-chip buffers. SRAM is not used for huge memory because it has large area and high cost per bit.
+SRAM is volatile, fast and does not require refresh. It is used for caches, scratchpads, register files and on-chip buffers, but it has large area per bit. DRAM is volatile and stores data as charge on a capacitor, so it needs refresh. It is denser and cheaper than SRAM, so it is used as main memory, usually off-chip as **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate**. LPDDR is preferred in low-power SoCs. **eDRAM - Embedded Dynamic Random Access Memory** provides higher density than SRAM on-chip but needs refresh and special process support.
 
-**DRAM - Dynamic Random Access Memory** stores data as charge on capacitors and therefore needs refresh. It is denser and cheaper per bit than SRAM, so it is used for large main memory. In SoCs, this is usually external **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate**. LPDDR is used in mobile/embedded SoCs because it reduces memory power. **HBM - High Bandwidth Memory** is used when very high bandwidth is required, such as in GPU or AI accelerator SoCs.
+ROM and Flash are non-volatile memories. ROM stores fixed boot code or tables. NOR Flash is used for boot and firmware because it supports fast random reads and execute-in-place style usage. NAND Flash is used for high-density storage such as **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** and SSDs, but it needs **ECC - Error Correction Code**, bad-block management and wear leveling.
 
-Non-volatile memories are used when data must remain after power-off. **ROM - Read Only Memory** stores fixed boot code. NOR Flash is used for boot firmware and XIP - Execute In Place because it has good random-read behavior. NAND Flash is used for high-density storage such as **eMMC - embedded MultiMediaCard**, **UFS - Universal Flash Storage** and SSDs, but it needs **ECC - Error Correction Code**, bad-block management and wear leveling.
-
-The main tradeoffs are latency, bandwidth, density, area, power, volatility, endurance, retention and controller complexity. Thus, a good SoC uses fast SRAM near computation, DRAM/LPDDR/HBM for large runtime memory and ROM/NOR/NAND-based memory for boot and storage.
+The main tradeoffs in memory technology are latency, bandwidth, density, power, volatility, endurance, reliability and process compatibility. Therefore, an SoC normally uses a memory hierarchy: fast SRAM near the processor, larger DRAM for main memory and non-volatile Flash/ROM for boot and storage. The selected memory technology also determines the complexity of the memory controller.
 
 <a id="topic-1-technical-words"></a>
 
 ### Technical Words To Use For Marks
 
-- **Bit** (write this because memory fundamentally stores 0/1 values.)
-- **Byte** (write this because memory capacity and addresses are often discussed in bytes.)
-- **Address** (write this because processors access memory by specifying locations.)
-- **Read operation** (write this because memory access includes fetching stored data.)
-- **Write operation** (write this because memory access includes updating stored data.)
-- **Working memory** (write this because SRAM/DRAM are used during active computation.)
-- **Main memory** (write this because DRAM/DDR/LPDDR are usually the large runtime memory.)
-- **Storage memory** (write this because ROM/Flash/eMMC/UFS retain data after power-off.)
 - **Memory technology** (write this because the question asks about the physical/architectural memory types used in SoC.)
 - **Volatile memory** (write this because SRAM and DRAM lose data when power is removed.)
 - **Non-volatile memory** (write this because ROM and Flash retain boot code and persistent data.)
-- **Register file** (write this because it is the fastest small storage inside a processor or accelerator.)
 - **SRAM - Static Random Access Memory** (write this because it is the main fast on-chip memory technology.)
 - **DRAM - Dynamic Random Access Memory** (write this because it is the main high-density memory technology.)
 - **eDRAM - Embedded DRAM** (write this because it shows the intermediate option between SRAM and off-chip DRAM.)
@@ -1532,9 +934,6 @@ The main tradeoffs are latency, bandwidth, density, area, power, volatility, end
 - **On-chip memory** (write this because it gives low latency but limited capacity.)
 - **Off-chip memory** (write this because it gives large capacity but requires pins/controller/PHY.)
 - **Memory controller** (write this because the selected memory technology determines controller complexity.)
-- **PHY - Physical Layer** (write this because high-speed DDR/LPDDR/HBM memory needs electrical interface circuitry.)
-- **XIP - Execute In Place** (write this because NOR Flash may allow direct code execution from non-volatile memory.)
-- **SLC/MLC/TLC/QLC** (write this because NAND density and endurance depend on how many bits are stored per cell.)
 
 <a id="topic-1-diagrams"></a>
 
@@ -1692,118 +1091,22 @@ Tradeoff:
 
 ### 2. L1 Cache
 
-**L1 cache** means **Level 1 cache**. It is the first cache level seen by the processor core and is usually the closest memory structure after the CPU register file. It is made using fast **SRAM - Static Random Access Memory** because the processor may need to access it almost every cycle.
+L1 cache is the first cache level and is usually split into instruction cache and data cache. It is made using SRAM and is designed for very low latency.
 
-The main purpose of L1 cache is to avoid going to slower lower-level memory for every instruction and data access. Without L1 cache, the CPU would frequently wait for L2 cache, L3 cache or off-chip DRAM. With L1 cache, many accesses are satisfied close to the core.
-
-Important definition:
-
-```text
-L1 cache = smallest and fastest cache level placed closest to the CPU core,
-used to store recently or nearby-used instructions and data.
-```
-
-#### L1 Instruction Cache And L1 Data Cache
-
-L1 cache is often split into:
-
-- **I-cache - Instruction cache**: stores recently fetched program instructions.
-- **D-cache - Data cache**: stores recently accessed data such as variables, stack values, arrays and structure fields.
-
-This split is common because the CPU often needs to fetch an instruction and access data in the same cycle. If instruction fetch and data access used one small unified cache port, they could conflict. Separate I-cache and D-cache allow instruction fetch and data load/store operations to happen in parallel.
-
-Simple view:
-
-```text
-              +----------------+
-              |   CPU Core     |
-              +---+--------+---+
-                  |        |
-          instruction    data load/store
-                  |        |
-                  v        v
-            +---------+  +---------+
-            | I-cache |  | D-cache |
-            +---------+  +---------+
-                  \        /
-                   v      v
-                  L2 / lower memory
-```
-
-#### How L1 Cache Works
-
-When the processor wants an instruction or data item, it sends an address. The L1 cache checks whether a copy of that address is already present.
-
-- If present, it is a **cache hit**. Data is returned quickly from L1.
-- If absent, it is a **cache miss**. The data must be fetched from L2/L3/DRAM, and the CPU may stall or wait.
-
-Caches usually move data in **cache lines** or **cache blocks**, not only one byte at a time. A cache line is a small fixed-size block of adjacent memory addresses. For example, if the CPU reads one address, the cache may bring the surrounding nearby addresses too. This is important because of spatial locality.
-
-Inside the cache, each stored cache line usually has:
-
-- **data field**: the actual instruction/data bytes stored in the cache line,
-- **tag field**: identifies which main-memory address region this cache line belongs to,
-- **valid bit**: tells whether the cache entry contains meaningful data,
-- **dirty bit** in write-back data caches: tells whether cached data has been modified and must later be written back to lower memory.
-
-The processor address is commonly divided into:
-
-```text
-Tag + Index + Offset
-```
-
-- **Index** selects which cache location/set to check.
-- **Tag** is compared to confirm that the selected entry is the correct memory block.
-- **Offset** selects the required byte/word inside the cache line.
-
-This is how the cache knows whether an access is a hit or miss. If the valid bit is set and the tag matches, it is a cache hit. If the tag does not match or the valid bit is not set, it is a cache miss.
-
-Use of L1 cache:
+Use:
 
 - recently used instructions,
 - recently used data,
-- reducing instruction fetch and data fetch delay,
-- reducing average memory access time,
-- reducing traffic to L2/L3/DRAM,
-- keeping the processor pipeline supplied with instructions and operands.
-
-#### Relation With Locality
-
-L1 cache exists because programs show **locality**.
-
-**Temporal locality** means that if an instruction or data value is used now, it may be used again soon. Example: a loop executes the same instructions repeatedly, so those instructions remain useful in the I-cache. A frequently used variable may remain useful in the D-cache.
-
-**Spatial locality** means that if one memory address is used, nearby addresses may be used soon. Example: when a program reads an array, it often reads consecutive elements. The D-cache brings a full cache line, so nearby array elements are already available for the next accesses.
-
-**Sequential locality** is especially important for the I-cache. Program instructions are often fetched from consecutive addresses. So when the I-cache fetches a block of instructions, the next instruction is likely already present.
-
-Examples:
-
-```c
-for (i = 0; i < 100; i++) {
-    sum = sum + a[i];
-}
-```
-
-In this loop:
-
-- The loop instructions show **temporal locality** because the same instructions execute again and again.
-- The array `a[i]` shows **spatial locality** because `a[0]`, `a[1]`, `a[2]` and nearby elements are stored close together.
-- The instruction stream shows **sequential locality** because the CPU normally fetches the next instruction after the current one.
-
-This is why a small L1 cache can be very effective. It does not need to store the entire program. It only needs to store the small active working part of the program.
+- reducing instruction fetch and data fetch delay.
 
 Tradeoff:
 
 - very fast,
 - limited capacity,
 - more area and power per bit,
-- may create unpredictability due to misses,
-- split I-cache/D-cache increases parallel access but duplicates some control structures,
-- cache consistency must be handled when DMA or other masters modify memory,
-- in real-time systems, cache misses can make timing less predictable than TCM or scratchpad memory.
+- may create unpredictability due to misses.
 
-Exam line: **L1 cache improves average memory access time by exploiting temporal, spatial and sequential locality; I-cache benefits mainly from repeated/sequential instruction fetch, while D-cache benefits from repeated and nearby data accesses.**
+L1 is often split into **I-cache** and **D-cache** because instruction fetch and data access can occur in parallel. This increases bandwidth but may slightly reduce flexibility compared with a unified cache.
 
 ### 3. L2 / L3 Cache
 
@@ -2130,71 +1433,7 @@ Even though the larger cache has fewer misses, it can be worse if it increases h
 
 ### Memory Hierarchy And Memory Controller
 
-The **memory controller** is a digital hardware block in the SoC that manages access to memory. It receives read/write requests from processors, caches, DMA engines and accelerators, then converts those requests into legal memory operations for the actual memory device.
-
-Important definition:
-
-```text
-Memory controller = hardware block that accepts memory requests from the SoC,
-arbitrates and schedules them, and generates the correct commands/timing
-for the target memory technology.
-```
-
-It normally sits between the **SoC interconnect/cache subsystem** and the external memory interface.
-
-Simple placement:
-
-```text
-CPU / GPU / DMA / DSP / AI accelerator / peripherals
-        |
-        v
-Cache subsystem / SoC interconnect / NoC
-        |
-        v
-Memory Controller
-        |
-        v
-PHY - Physical Layer
-        |
-        v
-External DRAM / LPDDR / DDR / HBM
-```
-
-The memory controller is not just software. It is mostly **physical digital logic inside the SoC**. Firmware or software may configure its registers, but the controller hardware performs the actual arbitration, timing, command generation, refresh control and response handling.
-
-#### What The Memory Controller Does
-
-A memory controller may perform:
-
-- **Address decoding**: decides which memory region or device a request belongs to.
-- **Address mapping**: maps system addresses into channel, rank, bank, row and column fields for DRAM.
-- **Arbitration**: decides which requester gets service first when multiple masters request memory.
-- **Command scheduling**: orders memory commands to improve bandwidth and reduce latency.
-- **Timing control**: obeys memory timing parameters such as activate-to-read delay, precharge time and refresh time.
-- **Refresh control**: periodically refreshes DRAM cells so data is not lost.
-- **Read/write data buffering**: temporarily stores pending reads and writes.
-- **QoS - Quality of Service**: gives priority or bandwidth guarantees to urgent traffic such as display, camera or real-time audio.
-- **ECC - Error Correction Code** if supported: detects and corrects memory bit errors.
-- **Power management**: enters/exits low-power modes such as self-refresh or power-down.
-
-#### Why DRAM Is Mentioned In This Discussion
-
-In a memory hierarchy question, **DRAM - Dynamic Random Access Memory** is mentioned because it is usually the large **main memory** at the lower level of the hierarchy. When an access misses in L1/L2/L3 cache, the data often has to come from off-chip DRAM, DDR SDRAM or LPDDR. That access is much slower than an L1 cache hit, so DRAM creates the major **miss penalty** in AMAT - Average Memory Access Time.
-
-DRAM is also mentioned because it cannot be accessed like simple SRAM. SRAM can often be treated like a simple addressable memory: give address, read/write data, obey simpler timing. DRAM is different because it is organized into **banks, rows and columns** and stores bits as charge on capacitors. The controller must open a row using an **ACTIVATE** command, read or write columns, close rows using **PRECHARGE**, and periodically perform **REFRESH**.
-
-So when we say "memory controller pressure" or "DRAM traffic", we mean:
-
-```text
-More cache misses / DMA transfers / accelerator requests
-        -> more requests reach the memory controller
-        -> more commands must be scheduled to DRAM
-        -> higher latency, contention and bandwidth demand
-```
-
-This is why DRAM is central to the memory hierarchy discussion. It is the large capacity memory, but it is slower and command/timing-heavy, so the hierarchy tries to reduce unnecessary DRAM accesses.
-
-#### Relation Between Cache Hierarchy And Controller Traffic
+The memory controller sits between the SoC interconnect/cache subsystem and external memory. Its design depends on the hierarchy.
 
 If the SoC has a large cache:
 
@@ -2202,17 +1441,11 @@ If the SoC has a large cache:
 - memory controller pressure is lower,
 - average latency improves.
 
-Meaning: if the data is found in L1/L2/L3 cache, the request does not need to go to external DRAM. The memory controller is not involved for that cache hit. This saves latency, bandwidth and energy.
-
 If the SoC has weak caching:
 
 - more requests reach DRAM,
 - controller scheduling becomes more important,
 - bandwidth bottlenecks become visible.
-
-Meaning: if cache miss rate is high, more requests travel through the interconnect to the memory controller. The controller must then decide the order of reads/writes and obey DRAM timing. If too many requests arrive, the controller queue fills and latency increases.
-
-#### Relation Between Scratchpad/TCM And DRAM
 
 If the SoC uses scratchpad/TCM:
 
@@ -2220,56 +1453,14 @@ If the SoC uses scratchpad/TCM:
 - DRAM accesses become more controlled,
 - real-time behavior improves.
 
-Here, **scratchpad memory** and **TCM - Tightly Coupled Memory** are on-chip SRAM-based memories. They are close to the processor or accelerator and are usually software-managed. If a real-time loop, interrupt routine or DSP kernel stores its important code/data in TCM, it does not repeatedly access external DRAM. This reduces dependence on the memory controller.
-
-This is the connection:
-
-```text
-Critical data in TCM/scratchpad
-        -> fewer unpredictable DRAM accesses
-        -> less memory-controller contention
-        -> more predictable real-time behavior
-```
-
-So the word **DRAM** appears here because scratchpad/TCM is often used to avoid slow, variable-latency DRAM access. DRAM is excellent for large capacity, but not ideal for strict real-time deadlines because its access time depends on cache misses, controller queues, bank conflicts, row hits/misses and refresh.
-
-#### Relation With Multiple SoC Masters
-
 If the SoC has multiple masters:
 
-- memory controller must arbitrate among **CPU - Central Processing Unit**, **GPU - Graphics Processing Unit**, **DMA - Direct Memory Access**, **DSP - Digital Signal Processor**, camera/display controllers and accelerators,
+- memory controller must arbitrate among CPU, GPU, DMA, DSP and accelerators,
 - quality-of-service may be required,
 - starvation must be avoided,
 - real-time traffic may need priority.
 
-A **master** is any SoC block that can initiate memory transactions. The CPU is a master, but it is not the only one. A display controller may continuously read frames from memory. A camera block may continuously write image data. A DMA controller may transfer blocks of data. An AI accelerator may stream weights and activations. If all of them request DRAM at the same time, the memory controller must decide who gets served first.
-
-Example:
-
-```text
-Display read request: urgent because missing data can cause screen underflow
-CPU request: important for software performance
-DMA transfer: high bandwidth but may tolerate some delay
-AI accelerator: may need sustained bandwidth
-```
-
-The controller uses arbitration and QoS policies so urgent traffic is served on time while other traffic still makes progress. This prevents **starvation**, where one requester waits too long because other requesters keep getting priority.
-
-#### Technology Dependence Of Memory Controllers
-
-The controller depends strongly on memory technology:
-
-| Memory Type | Controller Nature | Why |
-|---|---|---|
-| SRAM | Simple controller | Random access, no refresh, simpler timing |
-| DRAM / DDR / LPDDR | Timing and scheduling controller | Needs activate/read/write/precharge/refresh and bank scheduling |
-| HBM | High-bandwidth multi-channel controller | Needs many channels/pseudo-channels and high parallel bandwidth |
-| NOR Flash | Command-based controller | Reads are simpler, but program/erase need command sequences |
-| NAND Flash | Management-heavy controller | Needs ECC, bad-block management, wear leveling and page/block handling |
-
 Thus, memory hierarchy and memory controller architecture cannot be separated. The hierarchy reduces pressure on main memory, and the controller manages the remaining traffic efficiently.
-
-Exam line: **The memory hierarchy decides how many requests reach main memory; the memory controller decides how those requests are legally and efficiently served by DRAM or another memory technology.**
 
 ### Common Mistakes To Avoid
 
@@ -2294,9 +1485,7 @@ Different levels of the hierarchy have different roles. L1 cache is small and fa
 
 The main tradeoffs in memory hierarchy are latency versus capacity, bandwidth versus cost, area versus performance, power versus speed, predictability versus average performance, hardware complexity versus software control and on-chip versus off-chip placement. A larger cache may reduce miss rate but increase hit time and power. Off-chip memory gives capacity but adds latency and controller complexity. Cache improves average performance but scratchpad/TCM gives predictable timing. Hence, memory hierarchy is a central SoC design decision.
 
-Memory hierarchy also affects memory controller architecture. The **memory controller** is the hardware block that receives memory requests from the cache subsystem, interconnect, DMA engines and accelerators, then converts them into legal commands for the target memory. DRAM is important in this discussion because it is usually the large main memory below the cache hierarchy. When a cache miss occurs, data often must be fetched from DRAM, creating miss penalty. Since DRAM is organized into banks, rows and columns and requires activate, read/write, precharge and refresh operations, the controller must perform timing control, scheduling and arbitration.
-
-A strong cache hierarchy reduces the number of requests reaching DRAM, while weak caching increases memory-controller pressure. Scratchpad or TCM can reduce unpredictable DRAM access by placing critical code/data close to the processor. In multi-master SoCs, the controller must arbitrate among **CPU - Central Processing Unit**, **DMA - Direct Memory Access**, **GPU - Graphics Processing Unit**, **DSP - Digital Signal Processor**, camera/display controllers and accelerators, and may require **QoS - Quality of Service** policies. Thus, memory hierarchy and memory controller design together determine SoC performance, power and real-time behavior.
+Memory hierarchy also affects memory controller architecture. A strong cache hierarchy reduces the number of requests reaching DRAM, while weak caching increases memory-controller pressure. In multi-master SoCs, the controller must arbitrate among **CPU - Central Processing Unit**, **DMA - Direct Memory Access**, **GPU - Graphics Processing Unit**, **DSP - Digital Signal Processor** and accelerators, and may require **QoS - Quality of Service** policies. Thus, memory hierarchy and memory controller design together determine SoC performance, power and real-time behavior.
 
 ### Short 10-Mark Exam Answer
 
@@ -2306,7 +1495,7 @@ Cache hierarchy improves average memory access time by exploiting temporal and s
 
 The main tradeoffs are latency versus capacity, bandwidth versus cost, area versus performance, power versus speed, predictability versus average performance and on-chip versus off-chip placement. On-chip **SRAM - Static Random Access Memory** gives low latency and high bandwidth but consumes die area. Off-chip **DRAM - Dynamic Random Access Memory** gives large capacity but has higher latency, I/O power and controller complexity. Scratchpad / **TCM - Tightly Coupled Memory** gives predictable timing but needs software management, while cache is hardware-managed but can suffer misses.
 
-Thus, a good SoC memory hierarchy places fast memory near computation, large memory farther away and non-volatile memory for boot/storage. This reduces average access time, improves bandwidth, controls cost and reduces pressure on the memory controller. The memory controller is important because it manages the remaining traffic to main memory, especially DRAM/LPDDR, by handling arbitration, command scheduling, timing rules and refresh.
+Thus, a good SoC memory hierarchy places fast memory near computation, large memory farther away and non-volatile memory for boot/storage. This reduces average access time, improves bandwidth, controls cost and reduces pressure on the memory controller.
 
 <a id="topic-2-technical-words"></a>
 
@@ -2331,12 +1520,6 @@ Thus, a good SoC memory hierarchy places fast memory near computation, large mem
 - **Bandwidth** (write this because SoC multimedia/AI workloads need high data movement rate.)
 - **Latency** (write this because memory delay directly affects processor stalls.)
 - **Cache coherence** (write this because multi-core SoCs need consistent shared-memory views.)
-- **Memory controller** (write this because it connects the hierarchy to actual external memory access.)
-- **DRAM traffic** (write this because cache misses and DMA transfers create requests to main memory.)
-- **Arbitration** (write this because multiple SoC masters may request memory at the same time.)
-- **Command scheduling** (write this because DRAM commands must be ordered efficiently.)
-- **Refresh** (write this because DRAM cells lose charge and must be periodically restored.)
-- **QoS - Quality of Service** (write this because display, camera and real-time traffic may need priority.)
 - **Unified cache** (write this because it stores both instructions and data.)
 - **Split I/D cache** (write this because L1 often separates instruction and data caches for bandwidth.)
 - **Inclusive cache** (write this because multilevel hierarchy may enforce inclusion.)
@@ -2397,69 +1580,6 @@ For full marks, answer in this order:
 
 The important point is this: **SDRAM access time depends on the state of the bank and row being accessed.** If the requested row is already open, the access is faster. If another row is open, the controller must precharge the old row and activate the new row before reading or writing. Therefore, SDRAM latency depends on row hits, row misses, bank conflicts and timing parameters.
 
-<a id="topic-3-foundation"></a>
-
-### SDRAM Foundation: What It Is And Why We Use It
-
-To understand SDRAM, first remember the memory hierarchy idea:
-
-```text
-CPU registers / cache / SRAM = very fast but small
-SDRAM / DDR / LPDDR          = large main memory but slower
-Flash / storage              = persistent but much slower for writes
-```
-
-**SDRAM - Synchronous Dynamic Random Access Memory** is mainly used as **large main memory** in an SoC system. It is normally outside the SoC die, connected through a memory controller and PHY. It is used because programs, operating systems, image frames, video buffers, AI tensors and application data need much more capacity than on-chip SRAM can provide.
-
-Why we do not simply use SRAM for main memory:
-
-- SRAM is fast, but each bit uses more transistors.
-- Large SRAM would consume too much chip area.
-- Large SRAM would increase chip cost and leakage power.
-- DRAM/SDRAM gives much higher density and lower cost per bit.
-
-Why SDRAM is not as simple as SRAM:
-
-- DRAM stores each bit as charge on a capacitor.
-- Capacitor charge leaks with time, so refresh is required.
-- A row must be activated before column data can be read/written.
-- An already open row may need to be closed before another row is opened.
-- Multiple timing rules must be obeyed by the memory controller.
-
-So the reason we study SDRAM basics is this:
-
-```text
-SDRAM gives large memory capacity,
-but the controller must carefully manage banks, rows, columns,
-commands and timing to get good performance.
-```
-
-### What "Synchronous" Means
-
-**Synchronous** means the memory operates according to a clock. The memory controller sends commands such as ACTIVATE, READ, WRITE, PRECHARGE and REFRESH on clock edges. Data movement also follows clock timing.
-
-This is important because synchronous operation allows predictable command scheduling. The controller can count clock cycles and know when the next legal command can be issued.
-
-Example:
-
-```text
-Clock cycle 0: ACTIVATE row
-Clock cycle 1-3: wait tRCD
-Clock cycle 4: READ column
-Clock cycle 5-8: wait CAS latency
-Clock cycle 9 onward: data burst appears
-```
-
-This does not mean SDRAM is instantly fast. It means the controller and memory follow a clocked protocol.
-
-### What "Dynamic" Means
-
-**Dynamic** means stored data must be periodically restored. A DRAM cell stores a bit as electrical charge on a tiny capacitor. Charge leaks over time. If the charge is not refreshed, the stored value may be lost.
-
-This is why SDRAM needs **REFRESH**. Refresh is not optional. It is required for data retention. During refresh, the memory may be unavailable for normal access, so refresh contributes to latency and can reduce available bandwidth.
-
-Exam line: **SDRAM is dense because it stores bits in capacitor cells, but it needs refresh and controller-managed timing because capacitor charge leaks and row access is not instant.**
-
 ### PPT / Book Citation
 
 The direct local source is the Flynn/Luk textbook. [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.167](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=167>) introduces SDRAM and the row/column DRAM array. Pages 168-170 explain RAS, CAS, refresh, chip access time, cycle time and burst/page modes. Pages 171-172 explain DDR SDRAM, multiple arrays/banks and independently activated rows. The relevant PPT context is [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22, which explains why large off-chip memory and cache hierarchy are needed in SoC systems.
@@ -2500,28 +1620,7 @@ Figure source: cite [Computer System Design System-On-Chip by Michael J. Flynn a
 
 ### DRAM Cell, Row And Column
 
-Each DRAM cell stores one bit as charge on a capacitor, controlled by an access transistor. A charged capacitor may represent logic 1 and a discharged capacitor may represent logic 0, depending on implementation. Because the stored charge leaks, DRAM must be periodically refreshed.
-
-Simple DRAM cell:
-
-```text
-          Bit Line
-             |
-          +-----+
-WL ----->|  T  |---- Storage Capacitor
-          +-----+          |
-                           C
-                           |
-                         Ground
-
-WL = word line
-T  = access transistor
-C  = storage capacitor
-```
-
-When a row is selected, the word line turns on the access transistors for many cells in that row. The tiny charge from each capacitor is shared with a bit line. Because this charge is very small, the memory uses **sense amplifiers** to detect and strengthen the value.
-
-Important point: DRAM read is not like reading a simple register. The act of sensing the tiny capacitor charge disturbs the stored charge, so the value must be restored. This is one reason row activation and timing delays exist.
+Each DRAM cell stores one bit as charge on a capacitor, controlled by an access transistor. Because the stored charge leaks, DRAM must be periodically refreshed.
 
 The memory array is organized as:
 
@@ -2530,58 +1629,7 @@ The memory array is organized as:
 - banks,
 - row buffers/sense amplifiers.
 
-To access data, the address is split into row and column parts. First the row is selected. Then the column is selected from that row. In older asynchronous DRAM, row and column addresses were controlled using **RAS - Row Address Strobe** and **CAS - Column Address Strobe**. In SDRAM, these actions are represented as clocked commands.
-
-Simple idea:
-
-```text
-ACTIVATE = choose/open a row
-READ     = choose columns from the open row
-WRITE    = update columns in the open row
-PRECHARGE = close the row and prepare for another row
-```
-
-<a id="topic-3-address-organization"></a>
-
-### SDRAM Address Organization
-
-An SoC processor generates a normal system address. The memory controller maps that address into SDRAM fields.
-
-Typical address breakdown:
-
-```text
-System address
-      |
-      v
-Channel + Rank + Bank + Row + Column + Byte offset
-```
-
-Definitions:
-
-- **Channel**: an independent memory interface. More channels can increase bandwidth because they can operate independently.
-- **Rank**: a group of memory devices/chips selected together on a memory module or package interface.
-- **Bank**: an internal DRAM subarray with its own row buffer. Banks allow overlapping operations.
-- **Row**: a long line of DRAM cells opened together by an ACTIVATE command.
-- **Column**: selected part of the open row used by READ or WRITE commands.
-- **Byte offset**: selects the exact byte/word inside the transferred data beat or burst.
-
-Why this matters:
-
-The same sequence of CPU addresses can behave very differently depending on how addresses are mapped to banks, rows and columns. A good mapping can spread traffic across banks and improve parallelism. A bad mapping can send too many accesses to the same bank and create bank conflicts.
-
-Example:
-
-```text
-Good case: consecutive cache-line fills go to different banks
-        -> bank interleaving works
-        -> higher throughput
-
-Bad case: many requests go to different rows in same bank
-        -> repeated precharge + activate
-        -> higher latency
-```
-
-Exam line: **SDRAM address mapping matters because it decides whether requests become row hits, bank-interleaved accesses or bank conflicts.**
+To access data, the address is split into row and column parts. First the row is selected. Then the column is selected from that row. In older asynchronous DRAM, row and column addresses are controlled using RAS and CAS. In SDRAM, these actions are represented as clocked commands.
 
 ### SDRAM Commands
 
@@ -2595,47 +1643,9 @@ Important SDRAM commands are:
 - **BURST TERMINATE**: stops a burst operation where supported.
 - **NOP**: no operation, used when waiting for timing constraints.
 
-These commands are needed because SDRAM is not accessed as one flat memory array. The controller cannot simply say "give me address X immediately." It must first make sure the correct bank and row are ready, then access columns from that row.
-
-Typical read from a closed bank:
-
-```text
-1. Choose bank and row.
-2. Issue ACTIVATE to open the row.
-3. Wait tRCD because the row must be sensed into the row buffer.
-4. Issue READ to select the column.
-5. Wait CAS latency because data must move through internal/output circuitry.
-6. Receive burst data on the data bus.
-```
-
-Typical write from a closed bank:
-
-```text
-1. Choose bank and row.
-2. Issue ACTIVATE.
-3. Wait tRCD.
-4. Issue WRITE.
-5. Send burst write data.
-6. Wait write recovery time if precharging after the write.
-```
-
-The controller inserts **NOP - No Operation** cycles or chooses another bank when it must wait for timing. This is why banked architecture is useful: while one bank is waiting internally, another bank may be ready for useful work.
-
 ### Row Buffer
 
 When a row is activated, the entire row is sensed into the row buffer. The row buffer acts like a temporary fast storage for the active row.
-
-The row buffer is made from sense amplifiers and latch-like circuitry associated with a bank. It is not a software-visible memory like SRAM, but it strongly affects performance. Once a row is open, column accesses to that same row are faster because the data is already in the row buffer.
-
-Think of the row buffer like opening a page in a book:
-
-```text
-Open page = ACTIVATE row into row buffer
-Read line = READ column from open row
-Close page = PRECHARGE before opening another row
-```
-
-If the next required data is on the same open page, access is quick. If it is on a different page in the same bank, the old page must be closed and the new page opened.
 
 There are three important cases:
 
@@ -2647,14 +1657,7 @@ Exam line: **SDRAM latency depends heavily on whether the access is a row hit, r
 
 ### Banked Architecture
 
-Modern SDRAM is divided into multiple banks. Each bank has its own row array and row buffer. A bank can be thought of as a semi-independent internal memory section. Banks allow the memory controller to overlap operations.
-
-Why banks are needed:
-
-- A single huge DRAM array would force too much waiting.
-- Activating, precharging and refreshing rows take time.
-- Multiple banks allow the controller to work on another bank while one bank is internally busy.
-- Bank-level parallelism improves throughput even though each bank still has DRAM timing limits.
+Modern SDRAM is divided into multiple banks. Each bank has its own row array and row buffer. Banks allow the memory controller to overlap operations.
 
 For example:
 
@@ -2664,15 +1667,6 @@ For example:
 - Bank 3 may be preparing for the next command.
 
 This improves throughput because the memory controller can hide some timing delays by switching to another bank while one bank is waiting.
-
-Important distinction:
-
-```text
-Latency = time for one request to complete.
-Bandwidth = amount of data transferred per second.
-```
-
-Banked architecture may not remove the physical latency of one row activation, but it can improve total bandwidth by overlapping work across banks.
 
 ### Bank Interleaving
 
@@ -2690,16 +1684,6 @@ Bank 3:                ACT ---- READ burst ---- PRE
 
 This increases bandwidth because the bus can remain busy while different banks perform internal row operations.
 
-Why we do bank interleaving:
-
-- to reduce idle cycles on the data bus,
-- to hide tRCD/tRP waiting time,
-- to avoid repeated conflicts in one bank,
-- to serve multiple masters more efficiently,
-- to improve sustained bandwidth for cache fills, DMA, display, camera and accelerator traffic.
-
-But bank interleaving works only when the address stream and address mapping allow requests to go to different banks. If many requests target different rows in the same bank, performance can still be poor.
-
 ### Burst Transfer
 
 SDRAM transfers data in bursts. After an initial column address, multiple consecutive data words are transferred. This is efficient because programs often access sequential memory locations and cache lines are filled using bursts.
@@ -2714,97 +1698,18 @@ Burst transfer helps:
 
 DDR SDRAM transfers data on both rising and falling clock edges, increasing data rate without requiring the core memory array to run at the same high speed.
 
-Why burst transfer exists:
-
-Once a row is open and a starting column is selected, nearby columns can be transferred efficiently. This matches **spatial locality**, because programs often access nearby addresses. It also matches cache behavior, because caches usually fill an entire cache line instead of one byte.
-
-Example:
-
-```text
-CPU misses in L1 cache
-      |
-      v
-Memory controller requests a full cache line from SDRAM
-      |
-      v
-SDRAM returns several consecutive words as a burst
-      |
-      v
-Cache stores the line for future nearby accesses
-```
-
-<a id="topic-3-why-latencies-exist"></a>
-
-### Why SDRAM Latencies Exist
-
-SDRAM latencies are not arbitrary numbers. They come from physical and architectural operations inside the memory.
-
-#### 1. Why ACTIVATE Takes Time
-
-The ACTIVATE command opens a row. Opening a row means enabling thousands of DRAM cells connected to bit lines and sensing their tiny capacitor charges. Sense amplifiers must detect very small voltage differences and restore stable values.
-
-This is why the controller must wait before issuing READ or WRITE after ACTIVATE. That waiting time is represented by **tRCD - Row-to-Column Delay**.
-
-#### 2. Why CAS Latency Exists
-
-After the row is open, the controller issues a READ command for a column. The selected data must pass through column selection logic, internal datapaths, output registers and the external data interface. This pipeline delay is **CL - CAS Latency**.
-
-So CAS latency does not mean "time to open a row." It means the delay from the READ command to the first returned data after the row is already active.
-
-#### 3. Why PRECHARGE Takes Time
-
-Before a different row can be opened in the same bank, the currently open row must be closed. The bit lines must be restored/prepared to a neutral starting condition. This is called precharging.
-
-The time required is **tRP - Row Precharge Time**. Row conflicts are slow because they require:
-
-```text
-PRECHARGE old row -> wait tRP -> ACTIVATE new row -> wait tRCD -> READ -> wait CL
-```
-
-#### 4. Why tRAS Exists
-
-After a row is activated, it must remain active long enough for sensing/restoration to complete correctly. The controller cannot immediately close the row too early. This minimum row-open time is **tRAS - Row Active Time**.
-
-#### 5. Why tRC Exists
-
-**tRC - Row Cycle Time** is the minimum time from one ACTIVATE to the next ACTIVATE in the same bank. It includes the time needed to activate a row, keep it active long enough and precharge before another row can be activated.
-
-#### 6. Why Refresh Causes Delay
-
-DRAM cells leak charge even if the processor does not access them. Refresh periodically reopens/restores rows so data is not lost. During some refresh operations, parts of memory are unavailable for normal reads/writes.
-
-This delay is represented by **tRFC - Refresh Cycle Time**. Refresh is one reason DRAM access can sometimes be delayed even when the processor request itself is simple.
-
-#### 7. Why Read/Write Turnaround Matters
-
-The SDRAM data bus is shared for reads and writes. Switching direction from read to write or write to read can require extra cycles so that two devices do not drive the bus at the same time and signals remain valid.
-
-This matters in memory-controller scheduling. A controller may group reads together or writes together to reduce turnaround overhead, but it must still avoid starving urgent traffic.
-
 ### Important SDRAM Latencies
 
-| Timing Term | Full Form / Meaning | What Causes It | Why It Matters |
-|---|---|---|---|
-| **CL / CAS latency** | Column Address Strobe latency; READ to first data delay | column selection and internal/output pipeline delay | visible read latency after row is already open |
-| **tRCD** | Row-to-Column Delay; ACTIVATE to READ/WRITE delay | row sensing and row-buffer setup after activation | paid when opening a closed row |
-| **tRP** | Row Precharge Time | closing current row and preparing bit lines for next row | paid during row conflict before another row can open |
-| **tRAS** | Row Active Time | row must remain active long enough for sensing/restoration | prevents closing a row too early |
-| **tRC** | Row Cycle Time | full activate-active-precharge cycle in same bank | limits how quickly same bank can open rows repeatedly |
-| **tCCD** | Column-to-Column Delay | spacing between column commands | affects back-to-back READ/WRITE command rate |
-| **tWR** | Write Recovery Time | written data must be safely restored before precharge | affects when a bank can close after a write |
-| **tRFC** | Refresh Cycle Time | refresh operation occupies memory resources | reduces available access time during refresh |
-| **tRRD** | Row-to-Row Delay | spacing between ACTIVATE commands to different banks | limits how aggressively banks can be activated |
-| **tFAW** | Four Activate Window | power/current limit on too many activates in a short time | prevents excessive activation current |
-
-For exams, if you cannot remember every timing parameter, remember these three first:
-
-```text
-tRCD = delay after opening a row before read/write
-CL   = delay after READ before first data
-tRP  = delay to close a row before opening another row
-```
-
-These three are enough to explain row hit, closed-row access and row conflict.
+| Timing Term | Meaning | Why It Matters |
+|---|---|---|
+| **CL / CAS latency** | Delay from READ command to first data | determines visible read latency after row is open |
+| **tRCD** | RAS-to-CAS delay; ACTIVATE to READ/WRITE delay | needed after opening a row |
+| **tRP** | precharge time; time to close a row before another activate | paid during row conflict |
+| **tRAS** | minimum row active time | row must remain active long enough |
+| **tRC** | row cycle time; ACTIVATE to next ACTIVATE in same bank | limits repeated row accesses in same bank |
+| **tCCD** | column-to-column delay | affects spacing of consecutive column commands |
+| **tWR** | write recovery time | delay after write before precharge |
+| **tRFC** | refresh cycle time | memory unavailable during refresh |
 
 ### Access Case Examples
 
@@ -2850,33 +1755,7 @@ This is the best latency diagram to draw because it directly explains why SDRAM 
 
 ### Role Of Memory Controller
 
-The **memory controller** is the block that makes SDRAM usable by the SoC. The CPU, DMA or accelerator usually sends normal read/write transactions. SDRAM does not understand those transactions directly. The memory controller converts them into SDRAM commands and legal timing sequences.
-
-Example:
-
-```text
-CPU load from address X
-        |
-        v
-Cache miss reaches memory controller
-        |
-        v
-Controller maps X -> channel/rank/bank/row/column
-        |
-        v
-Controller checks bank state
-        |
-        v
-Issues PRE/ACT/READ commands as needed
-        |
-        v
-SDRAM returns burst data
-        |
-        v
-Cache line is filled and CPU continues
-```
-
-The memory controller must:
+The memory controller converts processor/DMA/accelerator requests into SDRAM commands. It must:
 
 - map addresses to channel/rank/bank/row/column,
 - issue ACTIVATE, READ, WRITE, PRECHARGE and REFRESH commands,
@@ -2889,55 +1768,27 @@ The memory controller must:
 
 Memory-controller scheduling is important because two legal schedules can have very different performance. A good controller keeps banks busy and reduces row conflicts, but must still be fair to all requesters.
 
-Example of scheduling difference:
-
-```text
-Request A: Bank 0, Row 10
-Request B: Bank 0, Row 10
-Request C: Bank 0, Row 99
-```
-
-If the controller serves A then B, B becomes a row hit. If it serves A then C, the controller must close Row 10 and open Row 99, creating a row conflict. Therefore, reordering requests can improve performance.
-
-However, the controller cannot only maximize row hits. If it always serves row hits, another master may wait too long. Therefore, real controllers balance:
-
-- row-buffer locality,
-- bank parallelism,
-- request age,
-- read/write turnaround,
-- refresh deadlines,
-- priority and QoS,
-- fairness and starvation avoidance.
-
-Exam line: **The SDRAM controller improves performance by converting SoC requests into legal command sequences while exploiting row hits and bank interleaving without violating timing or fairness.**
-
 <a id="topic-3-final-answer"></a>
 
 ### Final Exam-Ready Answer
 
-**SDRAM - Synchronous Dynamic Random Access Memory** is a clock-controlled DRAM technology used as large main memory in SoC systems. It is called dynamic because each bit is stored as charge on a tiny capacitor and the charge must be periodically refreshed. It is called synchronous because commands and data transfers are coordinated with a clock. SDRAM is used because it provides much higher density and lower cost per bit than SRAM, making it suitable for large program data, operating-system memory, video buffers, graphics data, DMA buffers and AI workloads.
+SDRAM stands for Synchronous Dynamic Random Access Memory. It is dynamic because each bit is stored as charge on a capacitor and must be refreshed periodically. It is synchronous because its operations are controlled by a clock. SDRAM is used as large main memory in SoC systems, usually as off-chip DDR or LPDDR memory connected through a memory controller.
 
-SDRAM is not accessed like simple SRAM. Internally, it is organized into **banks, rows and columns**. A bank is an internal semi-independent memory section. A row is a long line of DRAM cells. A column selects part of an already opened row. The memory controller maps a system address into channel, rank, bank, row and column fields. This mapping matters because it decides whether requests become row hits, bank-interleaved accesses or bank conflicts.
+Internally, SDRAM is organized into rows, columns and banks. A memory access first selects a bank and row using an activate command. The selected row is copied into the row buffer. Then a read or write command selects the required column data from that open row. If the next request accesses the same open row, it is called a row hit and is fast. If it accesses a different row in the same bank, the old row must be precharged and the new row must be activated, causing extra latency.
 
-To access SDRAM, the controller issues commands. **ACTIVATE** opens a row in a selected bank and senses the row into the row buffer. **READ** or **WRITE** accesses columns from the open row. **PRECHARGE** closes the open row and prepares the bank for another row. **REFRESH** restores charge in DRAM cells so data is not lost. These commands are necessary because DRAM cells store weak capacitor charge and rows must be sensed, restored and prepared before reliable access.
+Banked architecture divides SDRAM into multiple banks, each with its own row buffer. This allows the memory controller to interleave requests. While one bank is waiting after activation or precharge, another bank can perform a read or write burst. Thus, bank interleaving improves bandwidth and hides some internal DRAM delays.
 
-The **row buffer** is central to SDRAM performance. When a row is activated, the row is copied into sense amplifiers/row buffer circuitry. If the next request accesses the same open row, it is a **row hit** and is fast. If no row is open, the controller must activate the required row first. If a different row is already open in the same bank, it is a **row conflict**, so the controller must precharge the old row, activate the new row and then read/write. Therefore, SDRAM latency changes depending on bank state and row-buffer locality.
+The important SDRAM latencies are CAS latency, tRCD, tRP, tRAS, tRC, tWR and tRFC. CAS latency is the delay between a read command and first data. tRCD is the delay between activate and read/write. tRP is the precharge delay needed to close a row. tRAS is the minimum row active time. tRFC is the refresh delay. A row hit only pays read/CAS latency, a closed-row access pays activate plus read latency, and a row conflict pays precharge, activate and read latency.
 
-Banked architecture improves throughput by dividing SDRAM into multiple banks, each with its own row buffer. While one bank is waiting after activation or precharge, another bank can perform a read/write burst. This is called **bank interleaving**. Bank interleaving does not remove the physical delay of DRAM cells, but it hides some waiting time and keeps the data bus more active. It is important for cache-line fills, DMA transfers, display/camera traffic and accelerator workloads.
-
-Important SDRAM latencies include **CL - CAS Latency**, **tRCD - Row-to-Column Delay**, **tRP - Row Precharge Time**, **tRAS - Row Active Time**, **tRC - Row Cycle Time** and **tRFC - Refresh Cycle Time**. tRCD exists because the row must be sensed after ACTIVATE. CAS latency exists because data takes time to move from the selected column through internal/output circuitry. tRP exists because bit lines must be prepared before opening another row. tRFC exists because refresh occupies memory resources. A row hit mainly pays CAS latency, a closed-row access pays tRCD plus CAS latency, and a row conflict pays tRP plus tRCD plus CAS latency.
-
-Thus, SDRAM performance depends not only on clock frequency. It depends on row hits, row conflicts, bank interleaving, burst length, refresh overhead, read/write turnaround and memory-controller scheduling. A good SoC memory controller improves SDRAM performance by mapping addresses carefully, exploiting row-buffer locality, spreading traffic across banks, obeying timing constraints and balancing bandwidth, latency, fairness and QoS.
+Therefore, SDRAM performance depends not only on clock frequency but also on bank state, row-buffer locality, burst length, refresh overhead and controller scheduling. A good SoC memory controller maps addresses and schedules commands to maximize row hits, exploit bank parallelism, reduce row conflicts and satisfy latency/bandwidth requirements.
 
 ### Short 10-Mark Exam Answer
 
-**SDRAM - Synchronous Dynamic Random Access Memory** is clock-controlled DRAM used as large main memory in SoC systems. It stores bits as charge on capacitors, so it needs refresh. It is organized into banks, rows and columns. To access data, the memory controller activates a row in a bank, then issues READ or WRITE commands to access columns in that open row.
+SDRAM is synchronous dynamic RAM used as large main memory in SoC systems. It stores data in capacitor-based DRAM cells, so it needs refresh. It is organized into banks, rows and columns. To access data, the memory controller activates a row in a bank, then issues read/write commands for columns in that row.
 
-Each bank has a row buffer. If the next request goes to the already open row, it is a row hit and is fast. If no row is open, the controller must activate a row first. If a different row is open in the same bank, the controller must precharge the old row and activate the new one, causing a row conflict and higher latency.
+The banked architecture allows multiple banks to operate in an interleaved manner. Each bank has a row buffer. If a request goes to an already open row, it is a row hit and is fast. If another row in the same bank is required, the controller must precharge the old row and activate the new row, causing higher latency. Important latencies include CAS latency, tRCD, tRP, tRAS and refresh latency.
 
-Banked architecture allows bank interleaving. While one bank waits after activate or precharge, another bank can transfer data. This improves bandwidth and hides some DRAM delay. SDRAM also transfers data in bursts, which is useful for cache-line fills and sequential data.
-
-Important latencies are **CL - CAS Latency**, **tRCD - Row-to-Column Delay**, **tRP - Row Precharge Time**, **tRAS - Row Active Time** and **tRFC - Refresh Cycle Time**. SDRAM performance depends on row hits, bank conflicts, burst length, refresh and memory-controller scheduling.
+Thus, SDRAM performance depends on row hits, bank conflicts, burst transfer, refresh and memory-controller scheduling. The controller improves performance by exploiting bank interleaving and row-buffer locality.
 
 <a id="topic-3-technical-words"></a>
 
@@ -2946,16 +1797,9 @@ Important latencies are **CL - CAS Latency**, **tRCD - Row-to-Column Delay**, **
 - **SDRAM** (write this because the question is specifically about synchronous DRAM.)
 - **DDR SDRAM** (write this because modern SoC DRAM usually transfers data on both clock edges.)
 - **Banked architecture** (write this because multiple banks enable interleaving and higher throughput.)
-- **Channel** (write this because memory bandwidth can increase using independent memory interfaces.)
-- **Rank** (write this because SDRAM addresses may include device/module grouping.)
-- **Bank** (write this because each bank has its own row buffer and timing state.)
-- **Row** (write this because ACTIVATE opens a row.)
-- **Column** (write this because READ/WRITE selects columns from an open row.)
 - **Row buffer** (write this because row hits and row conflicts depend on it.)
-- **Sense amplifier** (write this because tiny DRAM capacitor charge must be detected and restored.)
 - **Row hit** (write this because it explains the fastest SDRAM access case.)
 - **Row miss / row conflict** (write this because it explains extra precharge and activate delay.)
-- **Closed-row access** (write this because it is the middle case between row hit and row conflict.)
 - **ACTIVATE command** (write this because a row must be opened before column access.)
 - **READ/WRITE command** (write this because column access happens after activation.)
 - **PRECHARGE command** (write this because a bank must close a row before opening another.)
@@ -2966,14 +1810,8 @@ Important latencies are **CL - CAS Latency**, **tRCD - Row-to-Column Delay**, **
 - **tRAS** (write this because it defines minimum row active time.)
 - **tRC** (write this because it defines row cycle time.)
 - **tRFC** (write this because refresh blocks normal memory access.)
-- **tRRD** (write this because ACTIVATE commands to different banks still need spacing.)
-- **tFAW** (write this because too many activates in a short window can exceed current limits.)
 - **Burst length** (write this because SDRAM transfers multiple words per command.)
 - **Bank interleaving** (write this because it hides latency and improves bandwidth.)
-- **Bank-level parallelism** (write this because multiple banks allow overlapping operations.)
-- **Address mapping** (write this because system addresses are mapped to channel/rank/bank/row/column.)
-- **Read/write turnaround** (write this because switching bus direction can add delay.)
-- **Row-buffer locality** (write this because repeated access to the same open row improves performance.)
 - **Memory controller** (write this because SDRAM command scheduling is done by the controller.)
 
 <a id="topic-3-diagrams"></a>
@@ -2982,12 +1820,9 @@ Important latencies are **CL - CAS Latency**, **tRCD - Row-to-Column Delay**, **
 
 1. **SDRAM banked architecture**: Draw command logic connected to multiple banks, each with row array and row buffer.
 2. **Latency cases**: Draw row hit, closed-row and row-conflict timelines.
-3. **DRAM cell diagram**: Draw access transistor plus storage capacitor. This explains why DRAM is dense and why refresh is needed.
-4. **Address breakdown diagram**: Draw `System address -> Channel / Rank / Bank / Row / Column / Offset`. This helps explain why address mapping affects bank conflicts.
-5. **Command sequence diagram**: Draw `ACT -> tRCD -> READ -> CL -> Data` and `PRE -> tRP -> ACT -> tRCD -> READ -> CL -> Data`.
-6. **Book figure/source to cite**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.167](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=167>) for DRAM row/column organization.
-7. **Book figure/source to cite**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.171](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=171>) and p.172 for DDR SDRAM banked architecture.
-8. **PPT/lecture source to cite**: [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22 for why SoCs use large off-chip memory and cache hierarchy.
+3. **Book figure/source to cite**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.167](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=167>) for DRAM row/column organization.
+4. **Book figure/source to cite**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.171](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=171>) and p.172 for DDR SDRAM banked architecture.
+5. **PPT/lecture source to cite**: [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22 for why SoCs use large off-chip memory and cache hierarchy.
 
 ---
 
@@ -3301,65 +2136,32 @@ Reason: The syllabus explicitly places **Memory Controller** under **SoC Memory 
 
 ### What The Question Is Asking
 
-The examiner is asking you to explain the role, internal blocks and design importance of the memory controller. A weak answer only says: "A memory controller controls memory." A full-mark answer must explain what exactly it controls: request arbitration, address decoding, **DRAM - Dynamic Random Access Memory** command generation, row/bank management, refresh, timing constraints, buffering, **QoS - Quality of Service** and error protection.
+The examiner is asking you to explain the role, internal blocks and design importance of the memory controller. A weak answer only says: "A memory controller controls memory." A full-mark answer must explain what exactly it controls: request arbitration, address decoding, DRAM command generation, row/bank management, refresh, timing constraints, buffering, QoS and error protection.
 
 For full marks, answer in this order:
 
 1. Define memory controller.
 2. Explain why an SoC needs a memory controller.
-3. Draw a block diagram showing **CPU - Central Processing Unit**, **GPU - Graphics Processing Unit**, **DMA - Direct Memory Access**, interconnect, memory controller and **DRAM - Dynamic Random Access Memory**.
+3. Draw a block diagram showing CPU/GPU/DMA/interconnect, memory controller and DRAM.
 4. Explain the main blocks inside the memory controller.
 5. Explain how it converts read/write requests into memory commands.
 6. Explain timing, refresh, arbitration, scheduling and buffering.
-7. Discuss design tradeoffs: latency, bandwidth, power, area, predictability and **QoS - Quality of Service**.
-8. Link the answer back to memory hierarchy and **SDRAM - Synchronous Dynamic Random Access Memory** banked architecture.
+7. Discuss design tradeoffs: latency, bandwidth, power, area, predictability and QoS.
+8. Link the answer back to memory hierarchy and SDRAM banked architecture.
 
 <a id="topic-5-explanation"></a>
 
 ### Core Idea
 
-A **memory controller** is the hardware block that sits between **SoC masters** and the memory device. A **SoC master** or **memory master** is any block that can initiate a memory transaction. Examples include **CPU - Central Processing Unit** cores, **GPU - Graphics Processing Unit**, **DSP - Digital Signal Processor**, **DMA - Direct Memory Access** engine, display controller, camera interface, network block and hardware accelerators.
-
-These masters usually do not directly drive memory pins. They send abstract read/write transactions through an interconnect such as **AXI - Advanced eXtensible Interface**, **AHB - Advanced High-performance Bus**, **NoC - Network on Chip** or another bus fabric. The memory controller accepts those requests and converts them into the exact memory operations required by **SRAM - Static Random Access Memory**, **SDRAM - Synchronous Dynamic Random Access Memory**, **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory**, **LPDDR - Low-Power Double Data Rate** or another memory technology.
+A **memory controller** is the hardware block that sits between SoC masters and the memory device. SoC masters include CPU cores, GPU, DSP, DMA engine, display controller, camera interface, network block and accelerators. These masters usually do not directly drive DRAM pins. They send abstract read/write transactions through an interconnect such as AXI, AHB, NoC or another bus fabric. The memory controller accepts those requests and converts them into the exact memory operations required by SRAM, SDRAM, DDR, LPDDR or another memory technology.
 
 The simplest way to remember it is:
 
 ```text
 SoC masters -> Interconnect / NoC -> Memory controller -> Memory PHY -> Memory chips
-
-NoC = Network on Chip
-PHY = Physical Layer
 ```
 
-The controller is important because memory devices have strict timing and command requirements. For example, **SDRAM - Synchronous Dynamic Random Access Memory** cannot be read like a simple register. Before data can be read, the controller may need to open a row using the **ACTIVATE** command, wait for **tRCD - Row-to-Column Delay**, issue a **READ** command, wait for **CL - CAS Latency / Column Address Strobe Latency**, transfer burst data, and later use **PRECHARGE** to close the bank. If **REFRESH** is due, the controller must pause or schedule around normal traffic and refresh the **DRAM - Dynamic Random Access Memory** cells. If many masters request memory together, the controller must use **arbitration** to choose service order and prevent **starvation**, where a requester waits too long because other requests keep being served first.
-
-### Why We Talk About DRAM Here, Not Only SRAM
-
-In the memory-controller topic, we talk a lot about **DRAM - Dynamic Random Access Memory** because DRAM is usually the large external **main memory** in an SoC. It is also the memory technology that makes the controller architecturally complex.
-
-**SRAM - Static Random Access Memory** is much simpler from a controller point of view:
-
-- SRAM does not need refresh.
-- SRAM does not use ACTIVATE, PRECHARGE or row-buffer management.
-- SRAM usually has simpler read/write timing.
-- SRAM is often on-chip and close to the CPU, cache, scratchpad or accelerator.
-- SRAM is fast but too area-expensive for very large main memory.
-
-So an SRAM controller or SRAM interface may still exist, but it is usually much simpler: provide an address, assert read/write control, obey simple timing, and transfer data.
-
-**DRAM - Dynamic Random Access Memory**, **SDRAM - Synchronous Dynamic Random Access Memory**, **DDR - Double Data Rate** and **LPDDR - Low-Power Double Data Rate** are different:
-
-- DRAM stores data as charge on capacitors, so refresh is mandatory.
-- SDRAM is organized into banks, rows and columns.
-- A row must be activated before column access.
-- A bank may need precharge before opening another row.
-- Timing parameters such as **tRCD - Row-to-Column Delay**, **tRP - Row Precharge Time**, **tRAS - Row Active Time**, **tRC - Row Cycle Time**, **tRFC - Refresh Cycle Time** and **CL - CAS Latency** must be obeyed.
-- Multiple masters may compete for the same DRAM bandwidth.
-- The controller must schedule commands to reduce row conflicts and exploit bank interleaving.
-
-Therefore, when the exam asks about **memory controller architecture**, DRAM is discussed more than SRAM because DRAM needs a real command scheduler, timing controller, refresh controller, row/bank manager, **PHY - Physical Layer** interface and **QoS - Quality of Service** logic. SRAM is still important in the memory hierarchy, but it does not create the same level of controller complexity.
-
-Exam line: **SRAM needs simple low-latency access control; DRAM needs a full memory controller because it has refresh, banks, rows, commands, strict timing and shared-bandwidth scheduling.**
+The controller is important because memory devices have strict timing and command requirements. For example, SDRAM cannot be read like a simple register. Before data can be read, the controller may need to open a row using ACTIVATE, wait for tRCD, issue READ, wait for CAS latency, transfer burst data, and later PRECHARGE the bank. If refresh is due, the controller must pause normal traffic and refresh the DRAM cells. If many masters request memory together, the controller must arbitrate among them and prevent starvation.
 
 Therefore, the memory controller is both a **correctness block** and a **performance block**. It makes memory access legal according to device timing, and it also decides how efficiently the memory bandwidth is used.
 
@@ -3368,7 +2170,7 @@ Therefore, the memory controller is both a **correctness block** and a **perform
 Use this diagram in exams when asked to draw memory controller architecture:
 
 ```text
- CPU cores     GPU / DSP     DMA       Display / Camera
+ CPU cores     GPU/DSP       DMA       Display/Camera
     |            |            |              |
     +------------+------------+--------------+
                          |
@@ -3389,25 +2191,10 @@ Use this diagram in exams when asked to draw memory controller architecture:
               | QoS logic            |
               +----------------------+
                          |
-                DDR / LPDDR PHY
+                    DDR / LPDDR PHY
                          |
-        DRAM channel / ranks / banks
+              DRAM channel / ranks / banks
 ```
-
-Full forms for diagram labels:
-
-- **GPU - Graphics Processing Unit**.
-- **DSP - Digital Signal Processor**.
-- **DMA - Direct Memory Access**.
-- **AXI - Advanced eXtensible Interface**.
-- **AHB - Advanced High-performance Bus**.
-- **NoC - Network on Chip**.
-- **ECC - Error Correction Code**.
-- **QoS - Quality of Service**.
-- **DDR - Double Data Rate**.
-- **LPDDR - Low-Power Double Data Rate**.
-- **PHY - Physical Layer**.
-- **DRAM - Dynamic Random Access Memory**.
 
 This diagram is useful because it shows that the memory controller is not a single small circuit. It is a collection of sub-blocks that manage requests, addresses, timing, data movement, reliability and quality of service.
 
@@ -3415,15 +2202,15 @@ This diagram is useful because it shows that the memory controller is not a sing
 
 An SoC needs a memory controller for the following reasons:
 
-1. **Different masters share memory**: **CPU - Central Processing Unit**, **GPU - Graphics Processing Unit**, **DMA - Direct Memory Access**, display controller and accelerators may all access the same **DRAM - Dynamic Random Access Memory**. The controller decides whose request is served first.
-2. **DRAM has complex timing**: **SDRAM - Synchronous Dynamic Random Access Memory** and **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory** require ACTIVATE, READ, WRITE, PRECHARGE and REFRESH commands with exact timing gaps.
+1. **Different masters share memory**: CPU, GPU, DMA, display and accelerators may all access the same DRAM. The controller decides whose request is served first.
+2. **DRAM has complex timing**: SDRAM/DDR memories require ACTIVATE, READ, WRITE, PRECHARGE and REFRESH commands with exact timing gaps.
 3. **Address must be mapped**: A processor address must be translated into channel, rank, bank, row and column fields.
 4. **Data width mismatch exists**: A CPU may request a cache line, a DMA may request a burst, and the memory device may have a different bus width. The controller packs/unpacks data.
 5. **Bandwidth must be maximized**: The controller schedules row hits, bank interleaving and bursts to improve throughput.
 6. **Latency must be controlled**: Critical requests such as CPU cache misses or display fetches cannot wait indefinitely.
 7. **Refresh is mandatory**: DRAM cells leak charge, so the controller must periodically refresh rows.
-8. **Reliability is needed**: Many systems use **ECC - Error Correction Code**, parity, address protection, access permissions or error reporting.
-9. **Power must be managed**: **DDR - Double Data Rate** / **LPDDR - Low-Power Double Data Rate** memories support low-power modes, self-refresh and clock gating.
+8. **Reliability is needed**: Many systems use ECC, parity, address protection, access permissions or error reporting.
+9. **Power must be managed**: DDR/LPDDR memories support low-power modes, self-refresh and clock gating.
 10. **Real-time behavior may be required**: Automotive, camera, display and communication SoCs need predictable memory service.
 
 ### Main Blocks Inside A Memory Controller
@@ -3693,13 +2480,11 @@ If an exam asks about memory controller, do not write only definitions. Show tha
 
 ### Final Exam-Ready Answer
 
-A memory controller is a hardware block in an SoC that manages all communication between SoC masters and the memory system. **SoC masters** are request-generating blocks such as **CPU - Central Processing Unit** cores, **GPU - Graphics Processing Unit**, **DMA - Direct Memory Access** engine, display controller, camera interface, **DSP - Digital Signal Processor** and accelerators. These masters generate read and write requests through the system interconnect. The memory controller accepts these high-level requests and converts them into correct low-level memory operations for **SRAM - Static Random Access Memory**, **SDRAM - Synchronous Dynamic Random Access Memory**, **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory**, **LPDDR - Low-Power Double Data Rate** or other memory devices.
+A memory controller is a hardware block in an SoC that manages all communication between SoC masters and the memory system. SoC masters such as CPU cores, GPU, DMA engine, display controller, camera interface, DSP and accelerators generate read and write requests through the system interconnect. The memory controller accepts these high-level requests and converts them into correct low-level memory operations for SRAM, SDRAM, DDR, LPDDR or other memory devices.
 
-The memory controller is required because modern memories, especially SDRAM and DDR memories, cannot be accessed as simple registers. DRAM-based memories have banked organization, row buffers, burst transfers, refresh requirements and strict timing constraints. The controller maps a system address into channel, rank, bank, row and column fields. It then generates commands such as ACTIVATE, READ, WRITE, PRECHARGE and REFRESH while obeying timing parameters such as **tRCD - Row-to-Column Delay**, **CL - CAS Latency / Column Address Strobe Latency**, **tRP - Row Precharge Time**, **tRAS - Row Active Time**, **tRC - Row Cycle Time** and **tRFC - Refresh Cycle Time**.
+The memory controller is required because modern memories, especially SDRAM and DDR memories, cannot be accessed as simple registers. They have banked organization, row buffers, burst transfers, refresh requirements and strict timing constraints. The controller maps a system address into channel, rank, bank, row and column fields. It then generates commands such as ACTIVATE, READ, WRITE, PRECHARGE and REFRESH while obeying timing parameters such as tRCD, CAS latency, tRP, tRAS, tRC and tRFC.
 
-DRAM is discussed more than SRAM in memory-controller architecture because DRAM creates most of the controller complexity. **SRAM - Static Random Access Memory** is fast, on-chip in many cases, and does not need refresh, activate/precharge commands or row-buffer scheduling. **DRAM - Dynamic Random Access Memory** gives large main-memory capacity, but it needs refresh, bank/row management, command scheduling, timing control and a PHY. Therefore, SRAM needs simpler access control, while DRAM needs a full memory-controller architecture.
-
-Internally, a memory controller contains request queues, address decoder, arbiter, scheduler, command generator, timing controller, refresh controller, read/write buffers, data path logic, **ECC - Error Correction Code** logic and **QoS - Quality of Service** control. The request queues hold pending transactions. The arbiter decides which master should be considered. The scheduler selects an efficient command order by considering row-buffer hits, bank conflicts, read/write turnaround, refresh and priority. The timing controller ensures that all memory commands are issued only when legal. The refresh controller periodically refreshes DRAM cells to preserve data. Read and write buffers allow burst transfers and multiple outstanding memory requests.
+Internally, a memory controller contains request queues, address decoder, arbiter, scheduler, command generator, timing controller, refresh controller, read/write buffers, data path logic, ECC logic and QoS control. The request queues hold pending transactions. The arbiter decides which master should be considered. The scheduler selects an efficient command order by considering row-buffer hits, bank conflicts, read/write turnaround, refresh and priority. The timing controller ensures that all memory commands are issued only when legal. The refresh controller periodically refreshes DRAM cells to preserve data. Read and write buffers allow burst transfers and multiple outstanding memory requests.
 
 The memory controller strongly affects SoC performance. A good controller increases bandwidth by using row-buffer locality, bank interleaving, burst transfers and multi-channel memory. It reduces latency by prioritizing critical requests and avoiding unnecessary precharge/activate operations. It improves fairness by preventing starvation among CPU, GPU, DMA and real-time masters. It also improves reliability through ECC and error reporting. In multimedia and real-time SoCs, the controller may provide QoS guarantees so that display, camera or audio traffic receives memory service before deadlines.
 
@@ -3707,25 +2492,19 @@ The design of a memory controller involves tradeoffs. Optimizing only for row-bu
 
 ### Short 10-Mark Exam Answer
 
-A memory controller is the SoC hardware block that connects processors and other memory masters to the memory device. It receives read/write requests from **CPU - Central Processing Unit**, **GPU - Graphics Processing Unit**, **DMA - Direct Memory Access**, display and accelerators through the interconnect and converts them into memory commands.
+A memory controller is the SoC hardware block that connects processors and other memory masters to the memory device. It receives read/write requests from CPU, GPU, DMA, display and accelerators through the interconnect and converts them into memory commands.
 
-For **SDRAM - Synchronous Dynamic Random Access Memory** / **DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory**, the controller performs address mapping into channel, rank, bank, row and column. It issues ACTIVATE, READ, WRITE, PRECHARGE and REFRESH commands while satisfying timing parameters such as **tRCD - Row-to-Column Delay**, **CL - CAS Latency**, **tRP - Row Precharge Time** and **tRFC - Refresh Cycle Time**. It contains request queues, arbiter, scheduler, timing controller, refresh controller, read/write buffers, data path, **ECC - Error Correction Code** and **QoS - Quality of Service** logic.
+For SDRAM/DDR, the controller performs address mapping into channel, rank, bank, row and column. It issues ACTIVATE, READ, WRITE, PRECHARGE and REFRESH commands while satisfying timing parameters such as tRCD, CAS latency, tRP and tRFC. It contains request queues, arbiter, scheduler, timing controller, refresh controller, read/write buffers, data path, ECC and QoS logic.
 
-The memory controller improves performance by using bank interleaving, row-buffer hits, burst transfers and multi-channel access. It also provides fairness and QoS among different SoC masters. DRAM is the main example because it needs these scheduling and timing functions; SRAM access is much simpler and usually does not dominate controller architecture. Hence, memory controller architecture is essential for latency, bandwidth, reliability, power and real-time behavior in SoC memory design.
+The memory controller improves performance by using bank interleaving, row-buffer hits, burst transfers and multi-channel access. It also provides fairness and QoS among different SoC masters. Hence, memory controller architecture is essential for latency, bandwidth, reliability, power and real-time behavior in SoC memory design.
 
 <a id="topic-5-technical-words"></a>
 
 ### Technical Words To Use For Marks
 
 - **Memory controller** (write this because it is the exact architecture block asked in the question.)
-- **SoC master / memory master** (write this because CPU, GPU, DMA and display are the request sources.)
-- **CPU - Central Processing Unit** (write this because CPU cache misses are common memory requests.)
-- **GPU - Graphics Processing Unit** (write this because graphics traffic often needs high memory bandwidth.)
-- **DMA - Direct Memory Access** (write this because DMA engines generate burst transfers without constant CPU control.)
-- **DSP - Digital Signal Processor** (write this because DSP blocks may generate streaming memory traffic.)
-- **Interconnect / NoC - Network on Chip** (write this because masters reach memory through a bus or network fabric.)
-- **AXI - Advanced eXtensible Interface** (write this because many SoCs use AXI-style memory transactions.)
-- **AHB - Advanced High-performance Bus** (write this because embedded SoCs may use AHB-style interconnect.)
+- **SoC master** (write this because CPU, GPU, DMA and display are the request sources.)
+- **Interconnect / NoC** (write this because masters reach memory through a bus or network fabric.)
 - **Request queue** (write this because memory requests wait before being scheduled.)
 - **Arbitration** (write this because the controller must choose among competing masters.)
 - **Scheduler** (write this because command order affects bandwidth and latency.)
@@ -3739,26 +2518,26 @@ The memory controller improves performance by using bank interleaving, row-buffe
 - **PRECHARGE command** (write this because the bank must be prepared before opening another row.)
 - **REFRESH command** (write this because DRAM data must be periodically restored.)
 - **Timing controller** (write this because memory commands must obey exact timing rules.)
-- **tRCD - Row-to-Column Delay** (write this because it is the delay between row activation and column access.)
-- **CAS latency / CL - Column Address Strobe Latency** (write this because it is the delay between READ and data output.)
-- **tRP - Row Precharge Time** (write this because it is the precharge delay.)
-- **tRFC - Refresh Cycle Time** (write this because refresh consumes memory-service time.)
+- **tRCD** (write this because it is the delay between row activation and column access.)
+- **CAS latency / CL** (write this because it is the delay between READ and data output.)
+- **tRP** (write this because it is the precharge delay.)
+- **tRFC** (write this because refresh consumes memory-service time.)
 - **Read/write buffer** (write this because buffering supports outstanding requests and burst traffic.)
 - **Burst transfer** (write this because DDR memories transfer multiple data beats per command.)
-- **ECC - Error Correction Code** (write this because many controllers include error detection and correction.)
-- **QoS - Quality of Service** (write this because real-time and high-priority traffic require service guarantees.)
+- **ECC** (write this because many controllers include error detection and correction.)
+- **QoS** (write this because real-time and high-priority traffic require service guarantees.)
 - **Open-page policy** (write this because it keeps rows open for locality.)
 - **Close-page policy** (write this because it prepares banks for random accesses.)
 - **Bank interleaving** (write this because it hides bank timing delays and improves bandwidth.)
 - **Refresh overhead** (write this because refresh reduces available bandwidth.)
-- **Memory PHY - Physical Layer** (write this because DDR/LPDDR needs physical-layer signaling and timing.)
+- **Memory PHY** (write this because DDR/LPDDR needs physical-layer signaling and timing.)
 
 <a id="topic-5-diagrams"></a>
 
 ### Images / Diagrams To Remember
 
 1. **Memory controller block diagram**: Draw SoC masters, interconnect, memory controller blocks and DDR/LPDDR memory. This is the most important diagram for this topic.
-2. **DRAM command flow diagram**: Draw address decode -> ACTIVATE -> `tRCD - Row-to-Column Delay` wait -> READ/WRITE -> `CL - CAS Latency` -> data burst -> PRECHARGE/keep row open.
+2. **DRAM command flow diagram**: Draw address decode -> ACTIVATE -> tRCD wait -> READ/WRITE -> CAS latency -> data burst -> PRECHARGE/keep row open.
 3. **Address mapping diagram**: Draw system address divided into channel, rank, bank, row, column and byte offset.
 4. **Source figure to look for**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.169](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=169>) has a memory controller style DRAM module figure with dynamic memory controller and timing controller.
 5. **Source figure to look for**: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.173](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=173>) has SDRAM channels and controller.
@@ -3800,168 +2579,6 @@ For full marks, answer in this order:
 ### Core Idea
 
 The **processor-memory interaction model** is a simplified way to estimate how well a memory system can serve processor requests. In a real SoC, processors do not run only on arithmetic units. They continuously fetch instructions, load data, store results, handle cache misses and interact with DMA or accelerators. If the memory system cannot provide data fast enough, the processor stalls.
-
-### Important Blocks In This Model: DMA And Accelerators
-
-Before studying processor-memory interaction models, understand that the **CPU - Central Processing Unit** is not the only block that uses memory. Modern SoCs have other blocks that can also read and write memory. These blocks become **memory masters**, meaning they can initiate memory transactions.
-
-#### DMA - Direct Memory Access
-
-**DMA** means **Direct Memory Access**. A **DMA controller** is a hardware block that transfers data between memory and peripherals, or between two memory regions, without the CPU manually moving every word of data.
-
-Without DMA, the CPU would move data like this:
-
-```text
-1. CPU reads one word from source.
-2. CPU writes that word to destination.
-3. CPU repeats this thousands or millions of times.
-```
-
-This wastes CPU cycles because the CPU becomes a data-copy machine instead of doing useful computation.
-
-With DMA, the CPU only configures the DMA controller:
-
-```text
-Source address      = where data starts
-Destination address = where data should go
-Transfer size       = how many bytes/words
-Direction/type      = memory-to-memory, peripheral-to-memory, memory-to-peripheral
-Start bit           = begin transfer
-```
-
-Then the DMA controller performs the transfer by itself:
-
-```text
-CPU configures DMA registers
-        |
-        v
-DMA reads source data from memory/peripheral
-        |
-        v
-DMA writes data to destination memory/peripheral
-        |
-        v
-DMA raises interrupt when done
-```
-
-Where DMA is used:
-
-- moving camera frames into memory,
-- moving audio samples between memory and audio interface,
-- copying blocks of memory,
-- feeding data to a hardware accelerator,
-- moving network packets,
-- storage transfers,
-- display/video buffer movement.
-
-Why DMA matters in processor-memory interaction:
-
-- DMA creates memory requests even when the CPU is not directly loading/storing data.
-- DMA can generate long burst transfers and consume high memory bandwidth.
-- DMA can compete with CPU cache misses, GPU traffic, display traffic and accelerator traffic.
-- DMA reduces CPU workload but increases memory-system traffic.
-- DMA may cause cache-coherency issues if CPU cache contains old copies of memory that DMA updates.
-
-Example:
-
-```text
-Camera -> DMA -> DRAM frame buffer
-CPU/GPU later reads the frame buffer
-```
-
-Here, the camera data does not pass word-by-word through the CPU. The DMA controller writes the frame into **DRAM - Dynamic Random Access Memory** directly. But the memory controller still sees many write requests, so DMA affects bandwidth and contention.
-
-Exam line: **DMA - Direct Memory Access is a hardware controller that moves data without continuous CPU involvement; it improves CPU efficiency but becomes another memory master that can contend for memory bandwidth.**
-
-#### Hardware Accelerator
-
-A **hardware accelerator** is a specialized hardware block designed to perform a specific task faster or more energy-efficiently than a general-purpose CPU.
-
-The CPU is flexible. It can run many kinds of software. But because it is general-purpose, it may not be the fastest or most power-efficient block for repeated heavy operations. An accelerator is built for a narrower job.
-
-Examples of accelerators:
-
-- **GPU - Graphics Processing Unit** for graphics and parallel computation.
-- **DSP - Digital Signal Processor** for signal-processing operations.
-- AI / neural-network accelerator for matrix multiplication and inference.
-- Video encoder/decoder for H.264/H.265/AV1 processing.
-- Image signal processor for camera pipelines.
-- Crypto accelerator for encryption/decryption.
-- Network packet accelerator.
-- Compression/decompression accelerator.
-
-What an accelerator does:
-
-1. CPU configures accelerator registers.
-2. Accelerator reads input data from memory.
-3. Accelerator performs specialized computation.
-4. Accelerator writes output data back to memory.
-5. Accelerator interrupts CPU or sets status when complete.
-
-Simple flow:
-
-```text
-CPU sets accelerator registers
-        |
-        v
-Accelerator reads input buffer from memory
-        |
-        v
-Accelerator computes result
-        |
-        v
-Accelerator writes output buffer to memory
-        |
-        v
-CPU reads result/status
-```
-
-Why accelerators matter in processor-memory interaction:
-
-- Accelerators often need high memory bandwidth.
-- They may issue many reads/writes independently of the CPU.
-- They can reduce CPU computation time but increase memory pressure.
-- They may need local SRAM buffers to reduce repeated DRAM access.
-- They may use DMA internally to fetch and store data.
-- They can contend with CPU, GPU, display and other masters at the memory controller.
-
-Example:
-
-```text
-AI accelerator reads weights + input activations from DRAM
-        |
-        v
-performs multiply-accumulate operations
-        |
-        v
-writes output activations back to DRAM
-```
-
-If the memory system cannot feed the accelerator fast enough, the accelerator becomes underutilized. This is called **memory bandwidth bottleneck**. The compute unit may be capable of many operations per second, but it stalls waiting for data.
-
-Exam line: **A hardware accelerator is a specialized SoC block that performs a specific computation efficiently, but it still depends on the memory system for input and output data, so it becomes an important memory master in processor-memory interaction models.**
-
-#### Why DMA And Accelerators Are Included In This Topic
-
-The topic is called processor-memory interaction, but in modern SoCs the memory system is shared by many requesters. The processor is only one requester. DMA controllers and accelerators can generate memory traffic at the same time.
-
-This means the memory model must consider:
-
-- CPU instruction fetches,
-- CPU data loads/stores,
-- cache misses,
-- DMA transfers,
-- accelerator input reads,
-- accelerator output writes,
-- contention at memory modules, banks, channels and controller queues.
-
-So when this topic says "processor requests", it often represents a more general idea:
-
-```text
-memory requests from CPU + DMA + accelerators + other SoC masters
-```
-
-That is why the model is useful for SoC design. It estimates whether the memory system can serve all requesters without excessive stalls, contention or bandwidth loss.
 
 The goal of the model is to answer questions such as:
 
@@ -4257,11 +2874,11 @@ Bw = B(m,n) / Ts
 
 This formula shows that memory bandwidth depends on both the number of requests and the number of independent memory modules. Increasing the number of memory modules or banks reduces contention and increases bandwidth, but the improvement is not perfectly linear because multiple requests may still choose the same module. Cache memory reduces the request rate reaching main memory, while nonblocking caches and pipelined processors increase the number of outstanding requests. The memory controller improves practical performance by address interleaving, request reordering, bank scheduling, row-buffer management and QoS-aware arbitration.
 
-Thus, models of processor-memory interaction help in understanding the relationship between memory latency, contention, bandwidth, cache misses, memory modules and controller scheduling. They are essential in SoC design because modern SoCs contain many processors, **DMA - Direct Memory Access** controllers and hardware accelerators sharing the same memory system.
+Thus, models of processor-memory interaction help in understanding the relationship between memory latency, contention, bandwidth, cache misses, memory modules and controller scheduling. They are essential in SoC design because modern SoCs contain many processors and accelerators sharing the same memory system.
 
 ### Short 10-Mark Exam Answer
 
-Simple processor-memory interaction models are used to analyze how memory requests from processors are served by memory modules. In practical SoCs, the requests may also come from **DMA - Direct Memory Access** controllers and hardware accelerators. In a single processor-single memory model, the processor sends one request and waits for the memory response. This blocking behavior shows that high memory latency causes processor stalls.
+Simple processor-memory interaction models are used to analyze how memory requests from processors are served by memory modules. In a single processor-single memory model, the processor sends one request and waits for the memory response. This blocking behavior shows that high memory latency causes processor stalls.
 
 In an n processor-m memory model, n requests may be generated in one memory service time Ts and distributed over m independent memory modules. If requests go to different modules, they are served in parallel. If multiple requests go to the same module, contention occurs and bandwidth is reduced.
 
@@ -4285,10 +2902,6 @@ This model also represents one pipelined processor or nonblocking cache issuing 
 
 - **Processor-memory interaction** (write this because it is the exact topic and frames the answer.)
 - **Memory request** (write this because the model counts read/write requests.)
-- **DMA - Direct Memory Access** (write this because DMA controllers create memory requests without continuous CPU involvement.)
-- **DMA controller** (write this because it is the hardware block that performs memory/peripheral transfers after CPU configuration.)
-- **Hardware accelerator** (write this because accelerators are specialized blocks that also read/write memory.)
-- **Memory master** (write this because CPU, DMA and accelerators can all initiate memory transactions.)
 - **Access time** (write this because processor stall depends on time to get data.)
 - **Service time Ts** (write this because the bandwidth model is based on service period.)
 - **Bandwidth** (write this because the model estimates served requests per time.)
