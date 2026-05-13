@@ -28,6 +28,11 @@ This maps to **CLO 3: Understand the Memory Design in SoC and Memory controller 
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.158](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=158>) discusses L1/L2/L3 cache array size and access-time limits.
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) explains two-level cache behavior, local/global/solo miss rates and L1-L2-memory hierarchy.
 
+Review-addendum use:
+
+- The CLO3 full-form review addendum uses p.146-p.159 of the Flynn/Luk textbook for scratchpad, cache, locality, hit/miss, miss penalty and Level 1/Level 2/Level 3 cache hierarchy language.
+- It uses the local module 1 PPT p.20-p.22 for the on-die/off-die memory tradeoff and why large memory is often kept off die.
+
 ## Web Sources
 
 - [Intel OpenCL SDK Developer Guide - Memory Hierarchy](https://www.intel.com/content/www/us/en/docs/opencl-sdk/developer-guide-processor-graphics/2019-4/memory-hierarchy.html): official Intel source showing a SoC memory hierarchy including local/shared memory, LLC/eDRAM and system DRAM.
@@ -40,4 +45,3 @@ This maps to **CLO 3: Understand the Memory Design in SoC and Memory controller 
 - For the **on-chip/off-chip hierarchy diagram**, use [module 1 part 1 introduction to system approach.pdf, p.20](<../System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22.
 - For the **cache hierarchy diagram**, use [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) which shows a two-level cache: processor, L1, L2 and memory.
 - For the **tradeoff explanation**, use [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.146](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=146>) to p.158 and [SOC components -processor.pdf, p.18](<../System on chip/SOC components -processor.pdf#page=18>).
-

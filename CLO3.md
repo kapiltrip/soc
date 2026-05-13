@@ -3,6 +3,7 @@
 ## Clickable Index
 
 - [CLO 3 Master Definitions](#clo3-master-definitions)
+- [CLO 3 Full-Form Review Addendum](#clo3-full-form-review)
 - [Topic 1: SoC Memory Design - Memory Technology](#topic-1)
   - [Question](#topic-1-question)
   - [Main Explanation](#topic-1-explanation)
@@ -100,6 +101,20 @@ Use this section to revise the full forms and meanings used throughout CLO 3. Fo
 | XIP | Execute In Place | Running code directly from non-volatile memory such as NOR Flash without copying it to RAM first. |
 | SLC / MLC / TLC / QLC | Single/Multi/Triple/Quad-Level Cell | NAND Flash storage density types storing 1, 2, 3 or 4 bits per cell. |
 | QDR SRAM | Quad Data Rate Static Random Access Memory | High-speed SRAM interface type useful for packet buffers and lookup tables. |
+| Cache | Hardware-managed fast copy memory | Stores copies of recently or nearby used memory blocks to reduce average access time. |
+| L1 cache | Level 1 cache | Smallest and fastest cache closest to the processor core; often split into Instruction cache and Data cache. |
+| L2 cache | Level 2 cache | Larger, slower cache that catches Level 1 cache misses before they reach main memory. |
+| L3 cache | Level 3 cache | Large shared cache or last-level cache in many multicore SoCs. |
+| I-cache | Instruction cache | Cache used for instruction fetches. |
+| D-cache | Data cache | Cache used for load/store data. |
+| Cache line | Fixed-size block stored in cache | Unit of movement between memory hierarchy levels; supports spatial locality. |
+| Tag | Cache address identifier | Metadata that tells whether a cache entry corresponds to the requested memory block. |
+| Valid bit | Cache metadata bit | Shows whether a cache entry contains usable data. |
+| Dirty bit | Cache metadata bit | Shows that cache data was modified and must be written back before replacement. |
+| Cache hit | Requested data found in cache | Fast access case. |
+| Cache miss | Requested data absent from cache | Slow case that triggers lower-level access and miss penalty. |
+| AMAT | Average Memory Access Time | Metric equal to hit time plus miss rate multiplied by miss penalty. |
+| Scratchpad memory | Software-managed local SRAM | Predictable on-chip memory whose contents are controlled by software/compiler rather than cache hardware. |
 
 Memory line for CLO 3:
 
@@ -110,6 +125,22 @@ ROM/Flash/NVM are non-volatile memories that keep data without power.
 The memory controller converts SoC requests into legal memory commands.
 Scheduling, banking and QoS - Quality of Service decide latency, bandwidth and fairness.
 ```
+
+<a id="clo3-full-form-review"></a>
+
+## CLO 3 Full-Form Review Addendum
+
+For CLO 3, always separate **technology**, **architecture** and **controller behavior**.
+
+**SRAM - Static Random Access Memory** is usually the fast on-chip technology used for caches, scratchpads, TCM - Tightly Coupled Memory, First-In First-Out buffers and small local memories. It is fast and predictable, but expensive in silicon area.
+
+**DRAM - Dynamic Random Access Memory** is the dense main-memory technology. It is discussed repeatedly because large SoCs need more capacity than practical on-chip SRAM can provide. DRAM is slower and more complex because it stores charge, needs refresh and must obey row/bank timing.
+
+**Cache** terms should be written with their full role: **L1 cache - Level 1 cache** is closest and fastest, **L2 cache - Level 2 cache** catches Level 1 misses, and **L3 cache - Level 3 cache** or last-level cache reduces traffic to Dynamic Random Access Memory.
+
+**Scratchpad memory** and **TCM - Tightly Coupled Memory** should be linked to predictability. Cache improves average access time, but scratchpad and TCM are used when software must know where critical code/data is stored and when access time must be more deterministic.
+
+**Memory controller** should be described as real hardware inside or near the SoC memory subsystem. It converts processor/cache/DMA requests into legal SDRAM - Synchronous Dynamic Random Access Memory or DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory commands such as ACTIVATE, READ, WRITE, PRECHARGE and REFRESH.
 
 <a id="topic-1"></a>
 
@@ -193,12 +224,15 @@ Draw this figure in the exam when the question asks for memory technology.
             +----------+
             | Registers|
             +----------+
-            |  SRAM    |  L1/L2 cache, TCM, scratchpad, FIFO
+            |  SRAM    |  Level 1/Level 2 cache,
+            |          |  TCM - Tightly Coupled Memory,
+            |          |  scratchpad, FIFO - First-In First-Out
             +----------+
             | eDRAM    |  denser on-chip memory, needs refresh
             +----------+
-            | DRAM /   |  off-chip main memory, DDR/LPDDR/HBM
-            | LPDDR    |
+            | DRAM /   |  off-chip main memory, DDR SDRAM /
+            | LPDDR /  |  LPDDR - Low-Power Double Data Rate /
+            | HBM      |  HBM - High Bandwidth Memory
             +----------+
             | NOR Flash|  boot code, XIP, firmware storage
             +----------+
@@ -275,12 +309,17 @@ The lecture material emphasizes that putting memory on the die improves accessib
                  |              SoC Die             |
                  |                                  |
                  |  +------+     +---------------+  |
-                 |  | CPU  |<--->| L1/L2 Cache   |  |
+                 |  | CPU  |<--->| Level 1 /     |  |
+                 |  |      |     | Level 2 Cache |  |
                  |  +------+     +---------------+  |
                  |      |              |            |
                  |      v              v            |
                  |  +---------------------------+   |
                  |  | On-chip SRAM / TCM / ROM  |   |
+                 |  | Static Random Access      |   |
+                 |  | Memory / Tightly          |   |
+                 |  | Coupled Memory / Read     |   |
+                 |  | Only Memory               |   |
                  |  +---------------------------+   |
                  |      |                            |
                  |      v                            |
@@ -293,6 +332,8 @@ The lecture material emphasizes that putting memory on the die improves accessib
                                 v
                  +-------------------------------+
                  | Off-chip DRAM / LPDDR / Flash |
+                 | Dynamic Random Access Memory   |
+                 | / Low-Power Double Data Rate   |
                  +-------------------------------+
 ```
 
@@ -315,7 +356,7 @@ Key characteristics:
 
 SRAM is used in SoCs for:
 
-- **L1/L2/L3 caches**.
+- **L1 cache - Level 1 cache**, **L2 cache - Level 2 cache** and **L3 cache - Level 3 cache**.
 - **Scratchpad memory**.
 - **TCM - Tightly Coupled Memory**.
 - **Register files**.
@@ -324,28 +365,28 @@ SRAM is used in SoCs for:
 - **Lookup tables**.
 - **Small real-time data buffers**.
 
-SRAM is chosen when speed and predictability matter more than density. For example, an L1 cache must be extremely fast, so SRAM is used even though it consumes more area. A real-time microcontroller may use SRAM TCM because it gives predictable access time unlike cache, where a miss can cause delay.
+SRAM is chosen when speed and predictability matter more than density. For example, a **L1 cache - Level 1 cache** must be extremely fast, so SRAM is used even though it consumes more area. A real-time microcontroller may use **SRAM-based TCM - Tightly Coupled Memory** because it gives predictable access time unlike cache, where a miss can cause delay.
 
 #### Meaning Of Common SRAM-Based SoC Memories
 
 These are all usually implemented using SRAM-like storage cells or SRAM macros, but they are not the same architecturally. The difference is in **who controls the memory**, **where it sits**, and **why it is used**.
 
-##### 1. L1 / L2 / L3 Caches
+##### 1. L1 Cache - Level 1 Cache / L2 Cache - Level 2 Cache / L3 Cache - Level 3 Cache
 
 **Cache memory** is small, fast memory placed close to the processor to reduce the average time needed to access instructions and data. It automatically stores copies of recently used or likely-to-be-used data from lower memory levels.
 
-**L1 cache - Level 1 cache** is the closest cache to the CPU core. It is usually the smallest and fastest cache. Many processors split L1 into **instruction cache** and **data cache**. The instruction cache stores recently fetched instructions, while the data cache stores recently accessed data.
+**L1 cache - Level 1 cache** is the closest cache to the **CPU - Central Processing Unit** core. It is usually the smallest and fastest cache. Many processors split Level 1 cache into **I-cache - Instruction cache** and **D-cache - Data cache**. The instruction cache stores recently fetched instructions, while the data cache stores recently accessed data.
 
-**L2 cache - Level 2 cache** is usually larger than L1 but slower. It may be private to one CPU core or shared by a small group of cores.
+**L2 cache - Level 2 cache** is usually larger than Level 1 cache but slower. It may be private to one CPU core or shared by a small group of cores.
 
-**L3 cache - Level 3 cache** is usually larger again and often shared among multiple CPU cores or clusters. It is slower than L1/L2 but still much faster than off-chip DRAM.
+**L3 cache - Level 3 cache** is usually larger again and often shared among multiple CPU cores or clusters. It is slower than Level 1/Level 2 cache but still much faster than off-chip **DRAM - Dynamic Random Access Memory**.
 
 Cache is **hardware-managed**. Software normally does not manually decide every cache line. The cache controller automatically checks whether requested data is present. If present, it is a **cache hit**. If absent, it is a **cache miss**, and data must be fetched from lower memory.
 
 Why caches are there:
 
 - To reduce average memory-access latency.
-- To reduce traffic to off-chip DRAM.
+- To reduce traffic to off-chip **DRAM - Dynamic Random Access Memory**.
 - To exploit temporal locality: recently used data may be used again.
 - To exploit spatial locality: nearby addresses may be used soon.
 - To keep the CPU from waiting too often for slow main memory.
@@ -507,7 +548,7 @@ Exam line: **Small real-time data buffers are fast on-chip SRAM buffers used to 
 
 | Memory Structure | Managed By | Typical Location | Main Purpose |
 |---|---|---|---|
-| L1/L2/L3 cache | Hardware cache controller | Near CPU/core cluster | Improve average memory performance |
+| Level 1/Level 2/Level 3 cache | Hardware cache controller | Near CPU/core cluster | Improve average memory performance |
 | Scratchpad memory | Software/compiler | On-chip SRAM region | Predictable software-controlled storage |
 | TCM - Tightly Coupled Memory | Software/system configuration | Dedicated CPU local memory path | Deterministic real-time access |
 | Register file | CPU/accelerator datapath | Inside processor/accelerator | Immediate operand/state storage |
@@ -1006,20 +1047,29 @@ Fastest / smallest / most expensive per bit
                  ^
                  |
           +---------------+
-          | CPU Registers |
+          | CPU - Central |
+          | Processing    |
+          | Unit Registers|
           +---------------+
-          | L1 I/D Cache  |
+          | Level 1       |
+          | I/D Cache     |
           +---------------+
-          | L2 / L3 Cache |
+          | Level 2 /     |
+          | Level 3 Cache |
           +---------------+
-          | TCM /         |
-          | Scratchpad    |
+          | TCM - Tightly |
+          | Coupled Mem.  |
+          | / Scratchpad  |
           +---------------+
           | On-chip SRAM  |
-          | ROM / eDRAM   |
+          | Static Random |
+          | Access Memory |
+          | / ROM / eDRAM |
           +---------------+
           | Off-chip DRAM |
-          | DDR / LPDDR   |
+          | Dynamic Random|
+          | Access Memory |
+          | / DDR / LPDDR |
           +---------------+
           | Flash / UFS / |
           | eMMC / SSD    |
@@ -1029,7 +1079,7 @@ Fastest / smallest / most expensive per bit
 Slowest / largest / cheapest per bit
 ```
 
-Figure source: cite [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22 for the on-chip/off-chip memory hierarchy idea. Also cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) for the two-level cache hierarchy figure involving processor, L1, L2 and memory. This figure is needed because it shows the basic speed-capacity-cost tradeoff visually.
+Figure source: cite [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) to p.22 for the on-chip/off-chip memory hierarchy idea. Also cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) for the cache hierarchy figure involving processor, **L1 cache - Level 1 cache**, **L2 cache - Level 2 cache** and memory. This figure is needed because it shows the basic speed-capacity-cost tradeoff visually.
 
 ### Why Memory Hierarchy Is Needed
 
@@ -1089,9 +1139,9 @@ Tradeoff:
 - very small capacity,
 - high area cost per bit.
 
-### 2. L1 Cache
+### 2. L1 Cache - Level 1 Cache
 
-L1 cache is the first cache level and is usually split into instruction cache and data cache. It is made using SRAM and is designed for very low latency.
+**L1 cache** means **Level 1 cache**. It is the first cache level and is usually split into **I-cache - Instruction cache** and **D-cache - Data cache**. It is made using **SRAM - Static Random Access Memory** and is designed for very low latency.
 
 Use:
 
@@ -1106,31 +1156,33 @@ Tradeoff:
 - more area and power per bit,
 - may create unpredictability due to misses.
 
-L1 is often split into **I-cache** and **D-cache** because instruction fetch and data access can occur in parallel. This increases bandwidth but may slightly reduce flexibility compared with a unified cache.
+Level 1 cache is often split into **I-cache - Instruction cache** and **D-cache - Data cache** because instruction fetch and data access can occur in parallel. This increases bandwidth but may slightly reduce flexibility compared with a unified cache.
 
-### 3. L2 / L3 Cache
+### 3. L2 Cache - Level 2 Cache / L3 Cache - Level 3 Cache
 
-L2 and L3 caches are larger but slower than L1. They reduce the number of expensive accesses to off-chip memory.
+**L2 cache** means **Level 2 cache** and **L3 cache** means **Level 3 cache**. They are larger but slower than Level 1 cache. They reduce the number of expensive accesses to off-chip memory.
 
 Use:
 
 - shared data among cores,
 - larger working sets,
-- reducing DRAM traffic,
+- reducing **DRAM - Dynamic Random Access Memory** traffic,
 - improving average memory access time.
 
 Tradeoff:
 
-- larger capacity than L1,
+- larger capacity than Level 1 cache,
 - lower miss rate,
-- higher latency than L1,
+- higher latency than Level 1 cache,
 - increased area and coherence complexity.
 
-In multi-core SoCs, L2 or L3 may be shared. Shared cache improves communication and reduces off-chip bandwidth demand, but it also introduces cache-coherency and arbitration issues.
+In multi-core SoCs, Level 2 cache or Level 3 cache may be shared. Shared cache improves communication and reduces off-chip bandwidth demand, but it also introduces cache-coherency and arbitration issues. In many high-performance SoCs, Level 3 cache is also called the **LLC - Last-Level Cache** because it is the last cache before the memory controller and main memory.
 
-### 4. Scratchpad Memory / TCM
+### 4. Scratchpad Memory / TCM - Tightly Coupled Memory
 
-**Scratchpad memory** is software-managed on-chip SRAM. **TCM** means **Tightly Coupled Memory**. Unlike cache, scratchpad/TCM is not automatically managed by hardware. Software or compiler decides what data goes there.
+**Scratchpad memory** is software-managed on-chip **SRAM - Static Random Access Memory**. **TCM** means **Tightly Coupled Memory**. Unlike cache, scratchpad memory and TCM are not automatically managed by hardware cache replacement. Software, compiler, firmware or **DMA - Direct Memory Access** decides what data goes there.
+
+TCM is a real on-chip memory block close to the processor, not a cache. It occupies an address range and is used when deterministic access matters more than automatic cache behavior.
 
 Use:
 
@@ -1225,28 +1277,33 @@ Use this if the question focuses more on processor-memory performance.
                        |
                        v
               +----------------+
-              | L1 I/D Cache   |
+              | Level 1 I/D    |
+              | Cache          |
               | fastest SRAM   |
               +-------+--------+
                       |
                       v
               +----------------+
-              | L2 / L3 Cache  |
+              | Level 2 /      |
+              | Level 3 Cache  |
               | larger SRAM    |
               +-------+--------+
                       |
                       v
               +----------------+
-              | Memory Ctrl    |
+              | Memory         |
+              | Controller     |
               +-------+--------+
                       |
                       v
               +----------------+
-              | DRAM / LPDDR   |
+              | DRAM - Dynamic |
+              | Random Access  |
+              | Memory / LPDDR |
               +----------------+
 ```
 
-Figure source: cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) because it shows processor, L1 cache, L2 cache and memory. This is useful because it directly supports the L1-L2-memory hierarchy answer.
+Figure source: cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) because it shows processor, **L1 cache - Level 1 cache**, **L2 cache - Level 2 cache** and memory. This is useful because it directly supports the Level 1-Level 2-memory hierarchy answer.
 
 ### Major Tradeoffs In Memory Hierarchy
 
@@ -1256,7 +1313,7 @@ Small memories are usually faster. Large memories are usually slower.
 
 Example:
 
-- registers and L1 cache are very fast but small;
+- registers and **L1 cache - Level 1 cache** are very fast but small;
 - DRAM is large but slower;
 - Flash is larger and persistent but much slower for writes.
 
@@ -1274,7 +1331,7 @@ Example:
 
 ### 3. Area Vs Performance
 
-Increasing cache size usually reduces miss rate, but consumes more die area and may increase access time. A very large L1 cache may become slower, defeating its purpose. Therefore, L1 is kept small and fast, while L2/L3 are made larger and slower.
+Increasing cache size usually reduces miss rate, but consumes more die area and may increase access time. A very large **L1 cache - Level 1 cache** may become slower, defeating its purpose. Therefore, Level 1 cache is kept small and fast, while **L2 cache - Level 2 cache** and **L3 cache - Level 3 cache** are made larger and slower.
 
 Exam line: **A larger cache can reduce miss rate but may increase hit time, area and power.**
 
@@ -1369,12 +1426,12 @@ Split I/D cache:
 
 - allows instruction fetch and data access in parallel,
 - increases bandwidth,
-- common for L1 caches.
+- common for **L1 cache - Level 1 cache**.
 
 Unified cache:
 
 - flexible sharing of capacity between instruction and data,
-- common in lower cache levels such as L2/L3.
+- common in lower cache levels such as **L2 cache - Level 2 cache** and **L3 cache - Level 3 cache**.
 
 ### 10. Inclusion And Coherence Tradeoff
 
@@ -1397,8 +1454,9 @@ AMAT = Hit Time + (Miss Rate x Miss Penalty)
 For two levels:
 
 ```text
-AMAT = L1 Hit Time
-     + L1 Miss Rate x (L2 Hit Time + L2 Miss Rate x Main Memory Penalty)
+AMAT = Level 1 cache hit time
+     + Level 1 cache miss rate x
+       (Level 2 cache hit time + Level 2 cache miss rate x main-memory penalty)
 ```
 
 Meaning:
@@ -1413,17 +1471,17 @@ This formula is very useful in exams because it turns the answer from descriptiv
 
 Suppose an SoC has:
 
-- small L1 cache: 1-cycle hit time, 8% miss rate;
-- larger L1 cache: 2-cycle hit time, 4% miss rate;
+- small **L1 cache - Level 1 cache**: 1-cycle hit time, 8% miss rate;
+- larger **L1 cache - Level 1 cache**: 2-cycle hit time, 4% miss rate;
 - miss penalty: 20 cycles.
 
-Small L1:
+Small Level 1 cache:
 
 ```text
 AMAT = 1 + (0.08 x 20) = 2.6 cycles
 ```
 
-Larger L1:
+Larger Level 1 cache:
 
 ```text
 AMAT = 2 + (0.04 x 20) = 2.8 cycles
@@ -1475,13 +1533,13 @@ Thus, memory hierarchy and memory controller architecture cannot be separated. T
 
 ### Final Exam-Ready Answer
 
-Memory design hierarchy in an SoC is the layered organization of memory resources from small, fast memories near the processor to large, slower memories farther away. It usually includes registers, L1 cache, L2/L3 cache, scratchpad or **TCM - Tightly Coupled Memory**, on-chip **SRAM - Static Random Access Memory**, **ROM - Read-Only Memory**, **eDRAM - Embedded Dynamic Random Access Memory**, off-chip **DRAM - Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate** and non-volatile storage such as Flash. The purpose of the hierarchy is to provide low average access time and high bandwidth while still giving the system enough storage capacity at reasonable area, power and cost.
+Memory design hierarchy in an SoC is the layered organization of memory resources from small, fast memories near the processor to large, slower memories farther away. It usually includes registers, **L1 cache - Level 1 cache**, **L2 cache - Level 2 cache**, **L3 cache - Level 3 cache**, scratchpad memory or **TCM - Tightly Coupled Memory**, on-chip **SRAM - Static Random Access Memory**, **ROM - Read-Only Memory**, **eDRAM - Embedded Dynamic Random Access Memory**, off-chip **DRAM - Dynamic Random Access Memory** or **LPDDR - Low-Power Double Data Rate** and non-volatile storage such as Flash. The purpose of the hierarchy is to provide low average access time and high bandwidth while still giving the system enough storage capacity at reasonable area, power and cost.
 
 The need for memory hierarchy arises because no single memory technology can satisfy all SoC requirements. Registers and SRAM are very fast but small and expensive per bit. DRAM provides large capacity but has higher latency, refresh overhead and controller complexity. Flash provides non-volatile storage but has slow writes and limited endurance. Therefore, SoCs place small fast memories close to compute units and larger slower memories farther away.
 
 Cache hierarchy works by exploiting locality. Temporal locality means recently used data is likely to be used again. Spatial locality means nearby addresses are likely to be accessed soon. When data is found in cache, it is a hit; when it is absent, it is a miss and must be fetched from a lower memory level. The miss penalty can be large, especially when data comes from off-chip DRAM. Therefore, average memory access time depends on hit time, miss rate and miss penalty.
 
-Different levels of the hierarchy have different roles. L1 cache is small and fast and is often split into instruction and data caches to increase bandwidth. L2 and L3 caches are larger and reduce traffic to main memory. Scratchpad or **TCM - Tightly Coupled Memory** provides deterministic low-latency storage for real-time or critical code but requires software management. On-chip **SRAM - Static Random Access Memory** gives high bandwidth and low latency but increases die area. Off-chip **DRAM - Dynamic Random Access Memory** provides large capacity but needs a memory controller and has higher latency and I/O power. Non-volatile memory stores boot code, firmware and persistent data.
+Different levels of the hierarchy have different roles. **L1 cache - Level 1 cache** is small and fast and is often split into instruction and data caches to increase bandwidth. **L2 cache - Level 2 cache** and **L3 cache - Level 3 cache** are larger and reduce traffic to main memory. Scratchpad or **TCM - Tightly Coupled Memory** provides deterministic low-latency storage for real-time or critical code but requires software management. On-chip **SRAM - Static Random Access Memory** gives high bandwidth and low latency but increases die area. Off-chip **DRAM - Dynamic Random Access Memory** provides large capacity but needs a memory controller and has higher latency and I/O power. Non-volatile memory stores boot code, firmware and persistent data.
 
 The main tradeoffs in memory hierarchy are latency versus capacity, bandwidth versus cost, area versus performance, power versus speed, predictability versus average performance, hardware complexity versus software control and on-chip versus off-chip placement. A larger cache may reduce miss rate but increase hit time and power. Off-chip memory gives capacity but adds latency and controller complexity. Cache improves average performance but scratchpad/TCM gives predictable timing. Hence, memory hierarchy is a central SoC design decision.
 
@@ -1489,9 +1547,9 @@ Memory hierarchy also affects memory controller architecture. A strong cache hie
 
 ### Short 10-Mark Exam Answer
 
-Memory design hierarchy in SoC is the arrangement of different memory levels from fastest and smallest to slowest and largest. A typical SoC hierarchy contains registers, L1 cache, L2/L3 cache, scratchpad or **TCM - Tightly Coupled Memory**, on-chip **SRAM - Static Random Access Memory** / **ROM - Read-Only Memory**, off-chip **DRAM - Dynamic Random Access Memory** / **LPDDR - Low-Power Double Data Rate** and Flash storage. This hierarchy is required because fast memories are expensive and small, while large memories are slower but cheaper per bit.
+Memory design hierarchy in SoC is the arrangement of different memory levels from fastest and smallest to slowest and largest. A typical SoC hierarchy contains registers, **L1 cache - Level 1 cache**, **L2 cache - Level 2 cache**, **L3 cache - Level 3 cache**, scratchpad or **TCM - Tightly Coupled Memory**, on-chip **SRAM - Static Random Access Memory** / **ROM - Read-Only Memory**, off-chip **DRAM - Dynamic Random Access Memory** / **LPDDR - Low-Power Double Data Rate** and Flash storage. This hierarchy is required because fast memories are expensive and small, while large memories are slower but cheaper per bit.
 
-Cache hierarchy improves average memory access time by exploiting temporal and spatial locality. A cache hit gives fast access, while a cache miss causes a miss penalty because data must be fetched from a lower level such as L2, L3 or DRAM. The average memory access time depends on hit time, miss rate and miss penalty.
+Cache hierarchy improves average memory access time by exploiting temporal and spatial locality. A cache hit gives fast access, while a cache miss causes a miss penalty because data must be fetched from a lower level such as **L2 cache - Level 2 cache**, **L3 cache - Level 3 cache** or **DRAM - Dynamic Random Access Memory**. The average memory access time depends on hit time, miss rate and miss penalty.
 
 The main tradeoffs are latency versus capacity, bandwidth versus cost, area versus performance, power versus speed, predictability versus average performance and on-chip versus off-chip placement. On-chip **SRAM - Static Random Access Memory** gives low latency and high bandwidth but consumes die area. Off-chip **DRAM - Dynamic Random Access Memory** gives large capacity but has higher latency, I/O power and controller complexity. Scratchpad / **TCM - Tightly Coupled Memory** gives predictable timing but needs software management, while cache is hardware-managed but can suffer misses.
 
@@ -1503,8 +1561,8 @@ Thus, a good SoC memory hierarchy places fast memory near computation, large mem
 
 - **Memory hierarchy** (write this because the question asks for layered memory organization.)
 - **Registers** (write this because they are the fastest storage closest to execution units.)
-- **L1 cache** (write this because it is the first and fastest cache level.)
-- **L2/L3 cache** (write this because larger lower-level caches reduce DRAM traffic.)
+- **L1 cache - Level 1 cache** (write this because it is the first and fastest cache level.)
+- **L2 cache - Level 2 cache / L3 cache - Level 3 cache** (write this because larger lower-level caches reduce DRAM traffic.)
 - **Scratchpad memory** (write this because it is software-managed on-chip memory used in many SoCs.)
 - **TCM - Tightly Coupled Memory** (write this because it gives deterministic low-latency access for real-time code.)
 - **On-chip memory** (write this because it gives low latency but increases die area.)
@@ -1521,7 +1579,7 @@ Thus, a good SoC memory hierarchy places fast memory near computation, large mem
 - **Latency** (write this because memory delay directly affects processor stalls.)
 - **Cache coherence** (write this because multi-core SoCs need consistent shared-memory views.)
 - **Unified cache** (write this because it stores both instructions and data.)
-- **Split I/D cache** (write this because L1 often separates instruction and data caches for bandwidth.)
+- **Split I/D cache - split Instruction/Data cache** (write this because Level 1 cache often separates instruction and data caches for bandwidth.)
 - **Inclusive cache** (write this because multilevel hierarchy may enforce inclusion.)
 - **Predictability** (write this because real-time SoCs may prefer scratchpad/TCM to cache.)
 - **Memory controller pressure** (write this because cache hierarchy affects how many requests reach DRAM.)
@@ -1535,8 +1593,8 @@ Thus, a good SoC memory hierarchy places fast memory near computation, large mem
 2. **PPT/lecture source to cite**: [module 1 part 1 introduction to system approach.pdf, p.20](<System on chip/module 1 part 1 introduction to system approach.pdf#page=20>) because it explicitly mentions on-chip ROM/RAM, off-chip memory, MMU and cache hierarchy.
 3. **PPT/lecture source to cite**: [module 1 part 1 introduction to system approach.pdf, p.21](<System on chip/module 1 part 1 introduction to system approach.pdf#page=21>) and p.22 because they explain why all memory cannot simply be placed on die.
 4. **PPT/lecture source to cite**: [SOC components -processor.pdf, p.18](<System on chip/SOC components -processor.pdf#page=18>) because it says faster cache and memory reduce instruction-fetch and data-fetch cycles.
-5. **Memory hierarchy pyramid**: Draw registers, L1, L2/L3, scratchpad/TCM, on-chip SRAM/ROM, off-chip DRAM and Flash.
-6. **Cache hierarchy diagram**: Draw processor -> L1 -> L2/L3 -> memory controller -> DRAM. Cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) for the two-level cache hierarchy idea.
+5. **Memory hierarchy pyramid**: Draw registers, Level 1 cache, Level 2/Level 3 cache, scratchpad/TCM, on-chip SRAM/ROM, off-chip DRAM and Flash.
+6. **Cache hierarchy diagram**: Draw processor -> Level 1 cache -> Level 2/Level 3 cache -> memory controller -> DRAM. Cite [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.159](<Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=159>) for the two-level cache hierarchy idea.
 7. **AMAT formula**: Write `AMAT = Hit Time + Miss Rate x Miss Penalty` beside the diagram. This helps score because it explains the tradeoff analytically.
 
 ---
@@ -2429,7 +2487,9 @@ The memory controller is below the cache hierarchy and above the memory device. 
 SoC memory hierarchy and memory controller are connected in this way:
 
 ```text
-Registers -> L1 cache -> L2/L3 cache -> Memory controller -> DRAM/LPDDR
+Registers -> L1 cache - Level 1 cache -> L2 cache - Level 2 cache
+          -> L3 cache - Level 3 cache
+          -> Memory controller -> DRAM - Dynamic Random Access Memory / LPDDR
 ```
 
 If cache hit rate is high, the memory controller sees fewer requests. If many masters generate cache misses or DMA traffic, the controller becomes a bottleneck. This is why memory controller scheduling is central to SoC performance.

@@ -228,7 +228,7 @@ Use this section before revising CLO 2. For this CLO, always know whether a term
 | CS | Chip Select | Signal used to select a specific memory chip or rank. |
 | ODT | On-Die Termination | Termination resistance inside the memory device used to improve signal integrity. |
 | Signal integrity | Quality of electrical signals | Board-level issue involving reflections, noise, skew, crosstalk and timing margin. |
-| DRAM cell | Dynamic RAM bit cell | Usually one access transistor plus one storage capacitor that stores one bit as charge. |
+| DRAM cell | Dynamic Random Access Memory bit cell | Usually one access transistor plus one storage capacitor that stores one bit as charge. |
 | 1T1C | One Transistor One Capacitor | Common DRAM cell structure: one transistor controls access to one capacitor. |
 | Volatile memory | Loses data without power | SRAM/DRAM need power to retain data. |
 | Non-volatile memory | Retains data without power | ROM, Flash, eFuse/OTP retain data after power off. |
@@ -1548,7 +1548,7 @@ So when we discuss memory in SoC design, we are asking:
 
 - Where is the program stored?
 - Where is data stored during execution?
-- Which memory is closest to the CPU?
+- Which memory is closest to the **CPU - Central Processing Unit**?
 - Which memory is large enough for applications?
 - Which memory is predictable enough for real-time code?
 - Which memory is cheap enough for large capacity?
@@ -1586,7 +1586,7 @@ Memory design is important because most SoC workloads are not limited only by co
 Example:
 
 ```text
-CPU executes an instruction.
+CPU - Central Processing Unit executes an instruction.
 CPU needs next instruction.
 CPU needs data operands.
 CPU writes result.
@@ -1596,13 +1596,13 @@ External memory is accessed.
 CPU waits if data is not ready.
 ```
 
-Even if the CPU clock frequency is high, it may waste cycles waiting for memory. This is called the **memory bottleneck** or **processor-memory gap**.
+Even if the **CPU - Central Processing Unit** clock frequency is high, it may waste cycles waiting for memory. This is called the **memory bottleneck** or **processor-memory gap**.
 
 Memory design affects:
 
 1. **Performance**: Faster memory reduces stalls and improves instruction/data throughput.
 2. **Power**: Moving data far across the chip or off the chip consumes energy.
-3. **Area**: Large SRAM arrays can occupy a large part of the die.
+3. **Area**: Large **SRAM - Static Random Access Memory** arrays can occupy a large part of the die.
 4. **Cost**: Bigger die area reduces manufacturing yield and increases cost.
 5. **Real-time behavior**: Cache misses make timing less predictable; Tightly Coupled Memory and scratchpad memory give more predictable timing.
 6. **Boot behavior**: Boot Read Only Memory must be available immediately after reset.
@@ -1643,13 +1643,15 @@ Basic hierarchy:
 ```text
 Fastest / smallest / closest
 
-CPU registers
+CPU - Central Processing Unit registers
 Level 1 Instruction cache and Level 1 Data cache
 Tightly Coupled Memory / scratchpad memory
 Level 2 cache
 Level 3 cache / system-level cache
-On-die SRAM / ROM / buffers
-Off-die DRAM such as DDR or LPDDR
+On-die SRAM - Static Random Access Memory / ROM - Read Only Memory / buffers
+Off-die DRAM - Dynamic Random Access Memory such as
+DDR SDRAM - Double Data Rate Synchronous Dynamic Random Access Memory
+or LPDDR - Low-Power Double Data Rate
 Non-volatile storage such as Flash, eMMC or UFS
 
 Slowest / largest / farthest
@@ -1657,7 +1659,7 @@ Slowest / largest / farthest
 
 Why this hierarchy exists:
 
-- CPU registers are extremely fast, but very small.
+- CPU - Central Processing Unit registers are extremely fast, but very small.
 - Level 1 cache is very fast, but still small.
 - Level 2/Level 3 cache is larger, but slower than Level 1 cache.
 - On-die Static Random Access Memory can be used for buffers and real-time memory, but costs die area.
@@ -1711,7 +1713,7 @@ The main reason cache exists is the **processor-memory gap**:
 ```text
 Processor pipeline can execute quickly.
 Large memory is slower and farther away.
-If every instruction/data access went to DRAM, the CPU would stall often.
+If every instruction/data access went to DRAM - Dynamic Random Access Memory, the CPU - Central Processing Unit would stall often.
 Cache keeps likely-needed data close to the CPU.
 ```
 
@@ -1743,7 +1745,7 @@ What Level 1 cache does:
 Beginner example:
 
 ```text
-CPU executes a loop.
+CPU - Central Processing Unit executes a loop.
 The loop instructions fit in L1 Instruction cache.
 The CPU fetches them quickly every iteration.
 If array data also fits or streams well through L1 Data cache, data loads are faster.
@@ -1764,7 +1766,7 @@ Level 2 cache is often **unified**, meaning it may store both instruction lines 
 What happens in a common hierarchy:
 
 ```text
-CPU asks Level 1 cache.
+CPU - Central Processing Unit asks Level 1 cache.
 If Level 1 cache misses, request goes to Level 2 cache.
 If Level 2 cache hits, Level 2 supplies the line to Level 1.
 If Level 2 cache misses, request goes farther down the hierarchy.
@@ -1823,7 +1825,7 @@ A **cache hit** happens when the requested address is already present in the cac
 Flow:
 
 ```text
-CPU sends address.
+CPU - Central Processing Unit sends address.
 Cache checks index and tag.
 Tag matches and valid bit is set.
 Cache returns data quickly.
@@ -1839,7 +1841,7 @@ A **cache miss** happens when the requested cache line is not present in the cac
 Flow:
 
 ```text
-CPU sends address.
+CPU - Central Processing Unit sends address.
 Cache checks index and tag.
 Requested line is absent.
 Cache requests the line from lower memory level.
@@ -1867,7 +1869,7 @@ Replacement matters because a poor replacement decision can increase misses.
 
 #### Cache Write Policies
 
-When the CPU writes data, the cache must decide how lower memory is updated.
+When the CPU - Central Processing Unit writes data, the cache must decide how lower memory is updated.
 
 **Write-through cache**:
 
@@ -1967,9 +1969,9 @@ Example:
 
 ```text
 An AI accelerator processes an image tile.
-The tile is copied from DRAM into local scratchpad.
+The tile is copied from DRAM - Dynamic Random Access Memory into local scratchpad.
 The accelerator repeatedly reads the tile from scratchpad.
-After processing, the result is copied back to DRAM.
+After processing, the result is copied back to DRAM - Dynamic Random Access Memory.
 ```
 
 This is better than repeatedly accessing off-die Dynamic Random Access Memory because local scratchpad has lower latency, higher local bandwidth and lower energy per access.
@@ -2785,7 +2787,8 @@ Why this figure is useful: it shows the main memory design principle: closer mem
 |                                                           |
 | On-chip SRAM     Boot ROM     FIFO/buffers     Accelerator |
 |                                                           |
-| Memory controller -----> Off-die DRAM - Dynamic RAM        |
+| Memory controller -----> Off-die DRAM - Dynamic Random     |
+|                          Access Memory                     |
 +-----------------------------------------------------------+
 ```
 

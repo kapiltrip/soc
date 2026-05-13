@@ -39,6 +39,12 @@ This maps to **CLO 4: Analyze the Design Methodologies of SoC; TLM and its need 
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.52](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=52>) discusses design cost/complexity tradeoffs and design reuse.
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.53](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=53>) discusses hard, firm and soft IP and reuse tradeoffs.
 
+Review-addendum use:
+
+- The CLO4 full-form review addendum uses `14-SOC Design Methodologies.pdf` p.5-p.20 for the deeper TDD, BBD and PBD distinctions.
+- It uses `SOC Design Flow.pdf` p.4-p.6 for top-down modeling, early verification and DFT strategy context.
+- It uses the Flynn/Luk textbook p.44-p.53 for requirements, design iteration, reuse and IP tradeoffs.
+
 ## Web / Standards Sources
 
 - Web: [Accellera IP-XACT downloads](https://www.accellera.org/downloads/standards/ip-xact) provides the official Accellera page for IP-XACT, the IEEE 1685 standard for IP metadata and integration descriptions. This supports the PBD explanation that platform reuse benefits from standardized IP packaging and integration information.

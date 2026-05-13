@@ -3,6 +3,7 @@
 ## Clickable Index
 
 - [CLO 4 Master Definitions](#clo4-master-definitions)
+- [CLO 4 Full-Form Review Addendum](#clo4-full-form-review)
 - [Topic 1: SoC Design Essentials - Design Methodologies: TDD, BBD and PBD](#topic-1)
   - [Question](#topic-1-question)
   - [Main Explanation](#topic-1-explanation)
@@ -135,6 +136,15 @@ Use this section before revising CLO 4 answers. For this CLO, always learn the *
 | Accelerator | Dedicated hardware engine | Physical hardware block inside the SoC that performs one specific heavy task faster, with lower latency or with lower energy than running the same task as software on a general CPU. |
 | MMU | Memory Management Unit | Hardware block that translates virtual addresses to physical addresses and enforces memory protection. |
 | Bus bridge | Interconnect adapter | Hardware block that connects two bus protocols, widths, speeds or clock domains. |
+| CPU | Central Processing Unit | Main processor that runs software and starts transactions in architectural/co-design models. |
+| SRAM | Static Random Access Memory | Fast on-chip memory used for caches, buffers, scratchpads and local storage. |
+| DRAM | Dynamic Random Access Memory | Dense main memory technology usually reached through a memory controller. |
+| Cache | Hardware-managed fast copy memory | Reduces average instruction/data access time and affects hardware/software performance tradeoffs. |
+| Memory controller | Memory protocol controller | Hardware that converts SoC memory requests into legal external memory commands and timing. |
+| HLS | High-Level Synthesis | Tool flow that can generate RTL hardware from higher-level algorithmic descriptions. |
+| QoS | Quality of Service | Policy support for latency, bandwidth, priority or fairness in interconnect/memory systems. |
+| HW | Hardware | Physical circuits such as processors, memories, buses, accelerators and peripherals. |
+| SW | Software | Program code running on processors, including firmware, drivers, RTOS and applications. |
 
 Memory line for CLO 4:
 
@@ -143,6 +153,22 @@ TDD controls timing closure.
 BBD controls complexity using hierarchical blocks and budgets.
 PBD controls time-to-market using planned reuse and standardized platforms.
 ```
+
+<a id="clo4-full-form-review"></a>
+
+## CLO 4 Full-Form Review Addendum
+
+For CLO 4, the full forms are not enough. You must explain why each method/model exists.
+
+**TDD - Timing Driven Design** exists because delay and timing closure became dominant SoC problems. In this method, timing constraints influence synthesis, floorplanning, placement, routing and static timing analysis from the beginning.
+
+**BBD - Block Based Design** exists because one huge flat SoC is too complex for one team to design and close at once. The chip is divided into blocks with timing, area and power budgets, then integrated hierarchically.
+
+**PBD - Platform Based Design** exists because repeated redesign wastes time. A reusable platform gives preverified processors, interconnects, memories, software layers and interfaces so derivative products can be made faster.
+
+**ESL - Electronic System Level** and **TLM - Transaction-Level Modeling** exist because RTL - Register Transfer Level simulation is too slow for early architecture exploration. ESL/TLM models let designers test hardware/software partitioning, bus traffic, memory bottlenecks and software boot behavior before detailed RTL is complete.
+
+**HW/SW - Hardware/Software partitioning** is the decision of which functions become physical hardware and which remain software. Put repeated, parallel, deadline-critical work into hardware accelerators; keep control, configuration and changing behavior in software.
 
 <a id="topic-1"></a>
 

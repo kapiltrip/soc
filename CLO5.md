@@ -3,6 +3,8 @@
 ## Clickable Index
 
 - [CLO 5 Master Definitions](#clo5-master-definitions)
+- [CLO 5 Full-Form Review Addendum](#clo5-full-form-review)
+- [CLO 5 PYQ-Based Question Bank](<PYQ/CLO5_PYQ_Question_Bank.md>)
 - [Topic 1: Verification Techniques - OVM, UVM and VVM](#topic-1)
   - [Question](#topic-1-question)
   - [Main Explanation](#topic-1-explanation)
@@ -89,6 +91,14 @@ Use this section before revising the detailed topics. These are the terms that r
 | UPF | Unified Power Format | Power-intent format describing power domains, isolation, retention and level shifting. | Useful when discussing low-power verification. |
 | LFSR | Linear Feedback Shift Register | Hardware pattern generator often used in LBIST. | Shows how logic BIST creates pseudo-random test patterns. |
 | MISR | Multiple Input Signature Register | Hardware response compactor used in LBIST. | Shows how many logic responses are compressed into a signature. |
+| Fault model | Abstract manufacturing defect model | Represents physical defects as testable logical faults such as stuck-at, transition or bridging faults. | Explains what ATPG patterns are trying to detect. |
+| Stuck-at fault | Signal fixed at 0 or 1 | Structural fault where a node behaves as if permanently stuck-at-0 or stuck-at-1. | Most basic manufacturing fault model. |
+| Transition fault | Slow-to-rise or slow-to-fall fault | Delay fault where a node changes too slowly for at-speed operation. | Important for timing-related manufacturing defects. |
+| Bridging fault | Short between nodes | Defect where two wires/nodes are unintentionally connected. | Shows why structural testing is broader than functional simulation. |
+| Fault coverage | Percentage of modeled faults detected | Ratio of detected modeled faults to total target faults. | Key test-quality metric. |
+| Pattern compression | Test data compression | Reduces external ATE pattern volume using on-chip decompression/compaction. | Reduces tester memory and test time. |
+| Boundary scan cell | JTAG-accessible cell near chip pin | Test cell placed near chip I/O so pin/interconnect values can be shifted, captured and updated. | Explains what boundary scan physically adds near I/O pins. |
+| Test mode | Special operating mode for manufacturing test | Mode where scan, BIST, wrappers, clocks or isolation controls are configured for testing. | Needed to explain scheduling conflicts and DFT control. |
 
 Quick expansions for example terms that appear in explanations:
 
@@ -121,6 +131,22 @@ UVM/OVM/VVM organize verification.
 DFT, scan, BIST, TAM - Test Access Mechanism, JTAG and ATE support manufacturing test.
 Test scheduling reduces test time safely under constraints.
 ```
+
+<a id="clo5-full-form-review"></a>
+
+## CLO 5 Full-Form Review Addendum
+
+For CLO 5, always separate **verification** and **testing**.
+
+**Verification** checks the design before fabrication. It uses simulation, assertions, formal methods, UVM - Universal Verification Methodology environments, scoreboards, functional coverage and regression testing to prove that RTL - Register Transfer Level behavior matches the specification.
+
+**Testing** checks manufactured silicon after fabrication. It uses DFT - Design for Testability structures such as scan chains, BIST - Built-In Self-Test, JTAG - Joint Test Action Group boundary scan, TAM - Test Access Mechanism and ATE - Automatic Test Equipment to detect physical defects.
+
+**UVM - Universal Verification Methodology** is a testbench methodology, not chip hardware. Its agents, sequences, drivers, monitors, scoreboards and coverage collectors live in the verification environment.
+
+**DFT - Design for Testability** is real hardware inserted into the chip. Scan chains, BIST controllers, wrappers and test controllers occupy area and must be considered during design, timing closure and test scheduling.
+
+**ATPG - Automatic Test Pattern Generation** is a tool process. It creates structural test patterns for fault models such as stuck-at faults, transition faults and bridging faults. The generated patterns are later applied through scan, TAM and ATE paths.
 
 <a id="topic-1"></a>
 
@@ -338,6 +364,98 @@ This structure gives three advantages. First, it makes the testbench reusable. S
 **OVM** stands for **Open Verification Methodology**. It is a SystemVerilog-based open verification class library and methodology originally developed by Cadence and Mentor Graphics. OVM introduced a common framework for building reusable verification components, verification IP, tests and testbenches.
 
 In OVM, the testbench is **component-based** and **transaction-based**. Component-based means the testbench is split into reusable blocks such as generators, drivers, monitors, scoreboards and coverage collectors. Transaction-based means the testbench communicates using high-level operations such as read, write, burst, packet, frame or command, instead of manually toggling every signal in every test.
+
+#### How A Testbench Becomes Transaction-Based
+
+A testbench becomes **transaction-based** when the test writer stops describing every clock-by-clock signal change in the main test and instead describes one complete protocol operation as a structured object or record.
+
+At signal level, an AXI write is many small events:
+
+```text
+put address on AWADDR
+assert AWVALID
+wait for AWREADY
+put data on WDATA
+assert WVALID
+wait for WREADY
+set WLAST if final beat
+wait for BVALID
+check BRESP
+assert BREADY
+```
+
+At transaction level, the same operation is represented as one item:
+
+```text
+AXI_WRITE {
+  address     = 0x8000_1000
+  data        = [0x12, 0x34, 0x56, 0x78]
+  burst_len   = 4
+  transfer_sz = 32 bits
+  response    = expected OKAY
+}
+```
+
+The technical mechanism is:
+
+1. **Transaction object / sequence item**: A class or record stores operation fields such as address, data, read/write type, burst length, byte enables, ID, response type and delay. In UVM this is usually a `uvm_sequence_item`.
+2. **Sequence**: The sequence creates transaction objects. It may create directed transactions or constrained-random transactions.
+3. **Sequencer**: The sequencer orders and arbitrates which transaction item is sent next to the driver.
+4. **Driver / BFM - Bus Functional Model**: The driver receives the transaction and converts it into exact pin-level protocol activity using a virtual interface. This is where valid/ready handshakes, clock waits, address phase, data phase and response phase are actually driven.
+5. **DUT - Design Under Test**: The real RTL still sees only signals. The DUT does not know that the test was written as a transaction.
+6. **Monitor**: The monitor samples the same interface signals and reconstructs what happened into a transaction object.
+7. **Analysis port / scoreboard / coverage collector**: The monitor sends reconstructed transactions to the scoreboard and coverage collector. The scoreboard checks expected vs actual behavior at transaction level instead of checking every waveform manually.
+
+So transaction-based verification does not remove signal-level behavior. It **localizes** signal-level protocol detail inside the driver and monitor. The rest of the testbench works with meaningful operations.
+
+Typical UVM-style flow:
+
+```text
+sequence creates transaction
+        |
+        v
+sequencer sends transaction to driver
+        |
+        v
+driver converts transaction into signal toggles
+        |
+        v
+DUT responds at signal level
+        |
+        v
+monitor observes signals and rebuilds transaction
+        |
+        v
+scoreboard and coverage check transaction meaning
+```
+
+Small pseudo-code idea:
+
+```systemverilog
+class axi_item extends uvm_sequence_item;
+  rand bit        write;
+  rand bit [31:0] addr;
+  rand bit [31:0] data[];
+  rand int        burst_len;
+  bit  [1:0]      response;
+endclass
+
+// Test writer thinks at transaction level:
+item.write = 1;
+item.addr = 32'h8000_1000;
+item.burst_len = 4;
+start_item(item);
+finish_item(item);
+
+// Driver hides the pin-level protocol:
+seq_item_port.get_next_item(item);
+drive_axi_address_phase(item.addr, item.burst_len);
+drive_axi_data_phase(item.data);
+collect_axi_response(item.response);
+seq_item_port.item_done();
+```
+
+This is why it is called transaction-based: the testbench communication between sequence, driver, monitor, scoreboard and coverage is based on **transaction objects**, while only the driver and monitor deal with cycle-by-cycle protocol signals.
 
 This matters in SoC verification because most SoC bugs occur at interfaces. If an SoC uses standard buses or protocols, it is inefficient to write a new protocol testbench every time. A reusable OVM verification component can be connected to the same kind of interface in many designs. For example, an OVM-style bus agent can be reused when verifying an IP block, then reused again when that IP is integrated into a subsystem, and then reused again at full-chip level.
 

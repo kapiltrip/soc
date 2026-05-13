@@ -16,6 +16,12 @@ SoC Test Scheduling and Test Integration
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.193](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=193>) mentions optional on-chip test access in AMBA that reuses bus infrastructure for testing connected modules.
 - Textbook: [Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf, p.269](<../Computer System Design System-On-Chip by Michael J. Flynn and Wayne Luk.pdf#page=269>) states that system integration and testing issues must be addressed after design iterations.
 
+Review-addendum use:
+
+- The CLO5 full-form review addendum uses Flynn/Luk p.86 for manufacturing testing, validation, DFT and scan-chain context.
+- It uses `SOC Design Flow.pdf` p.6 for why DFT strategy is part of the design flow rather than an afterthought.
+- It uses the wrapper/TAM research sources below for the test scheduling, TAM width and rectangle-packing explanation.
+
 ## Web / Research Sources
 
 - [Wrapper/TAM Co-Optimization and constrained Test Scheduling for SOCs Using Rectangle Bin Packing](https://arxiv.org/abs/1008.4448): describes an integrated SoC test automation framework using wrapper/TAM co-optimization and rectangle-packing test scheduling with power constraints.

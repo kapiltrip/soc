@@ -52,6 +52,11 @@ Useful pages:
 - p.57-p.60: Discusses power, dynamic/switching and leakage components, and area-time-power tradeoffs.
 - p.62: Discusses reliability as dependability/fault tolerance and relates it to die area, clock frequency and power.
 
+Review-addendum use:
+
+- The CLO1 full-form review addendum uses the local module 1 slides p.2-p.5 for System on Chip architecture, hardware/software partitioning and component roles.
+- It uses p.20-p.35 for memory/interconnect examples such as SRAM, DRAM, ROM, buses and Network on Chip.
+
 ## Web References
 
 ### 1. NASA Systems Engineering Handbook - Fundamentals of Systems Engineering

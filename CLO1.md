@@ -3,6 +3,7 @@
 ## Clickable Index
 
 - [CLO 1 Master Definitions](#clo1-master-definitions)
+- [CLO 1 Full-Form Review Addendum](#clo1-full-form-review)
 - [Topic 1: Introduction To Systems Approach, System Architecture, Components Of System, Hardware And Software, Chip Basics](#topic-1)
   - [Question](#topic-1-question)
   - [CLO Mapping](#topic-1-clo-mapping)
@@ -88,6 +89,46 @@ Use this section before revising CLO 1. This topic is introductory, so the marks
 | Validation | Checking against user/stakeholder need | Ensures the right system was built. |
 | RTL | Register Transfer Level | Hardware design abstraction describing registers and data transfers between them. |
 | HDL | Hardware Description Language | Language such as Verilog, SystemVerilog or VHDL used to describe digital hardware. |
+| CPU | Central Processing Unit | Main programmable processor that runs firmware, operating system code or application software. |
+| DSP | Digital Signal Processor | Processor or datapath optimized for signal-processing operations such as multiply-accumulate, filtering and streaming data. |
+| DMA | Direct Memory Access | Hardware engine that moves data between memory, peripherals and accelerators without the CPU copying every word. |
+| SRAM | Static Random Access Memory | Fast volatile memory used for caches, scratchpads, buffers and on-chip memories. |
+| DRAM | Dynamic Random Access Memory | Dense volatile memory used for large main memory; stores data as charge and needs refresh. |
+| ROM | Read Only Memory | Non-volatile memory used for fixed boot code, reset vectors or constants. |
+| TCM | Tightly Coupled Memory | Low-latency on-chip memory closely connected to a processor for predictable instruction/data access. |
+| NoC | Network on Chip | Packet-based on-chip interconnect that connects many processors, memories and IP blocks through routers and links. |
+| AXI | Advanced eXtensible Interface | AMBA high-performance memory-mapped interface used for processor, memory and accelerator traffic. |
+| AHB | Advanced High-performance Bus | AMBA bus protocol used in embedded systems for moderate/high-bandwidth transfers. |
+| APB | Advanced Peripheral Bus | AMBA low-complexity bus used for low-bandwidth peripheral register access. |
+| UART | Universal Asynchronous Receiver/Transmitter | Serial communication peripheral used for byte-oriented asynchronous communication. |
+| SPI | Serial Peripheral Interface | Synchronous serial interface commonly used for sensors, Flash and peripheral devices. |
+| GPIO | General-Purpose Input/Output | Programmable digital pins used for simple input/output control. |
+| ADC | Analog-to-Digital Converter | Mixed-signal block that converts analog voltage/current into digital values. |
+| DAC | Digital-to-Analog Converter | Mixed-signal block that converts digital values into analog output. |
+| PLL | Phase-Locked Loop | Clock-generation/synchronization circuit used to generate stable SoC clock frequencies. |
+| RF | Radio Frequency | Analog/mixed-signal circuitry for wireless communication frequencies. |
+| PMU | Power Management Unit | Hardware controller that manages clocks, resets, power domains and low-power states. |
+| JTAG | Joint Test Action Group | Standard low-pin debug/test access mechanism used for boundary scan and chip debug. |
+| BIST | Built-In Self-Test | On-chip test logic that lets memories or logic test themselves. |
+| OS | Operating System | System software that manages processor, memory, drivers, files, tasks and applications. |
+| RTOS | Real-Time Operating System | Operating system designed for predictable task scheduling and interrupt response. |
+| AI | Artificial Intelligence | Workload category involving inference/training-style computations, often accelerated by dedicated hardware. |
+
+<a id="clo1-full-form-review"></a>
+
+## CLO 1 Full-Form Review Addendum
+
+Use this addendum when revising the introduction diagrams. In CLO 1, the examiner usually checks whether you can connect high-level system words to actual SoC blocks.
+
+When you write **CPU - Central Processing Unit**, explain that it is the programmable control and execution block. It fetches instructions, runs firmware/software, programs peripherals through registers and coordinates interrupts.
+
+When you write **memory**, do not leave it generic. Mention **SRAM - Static Random Access Memory** for fast on-chip storage, **ROM - Read Only Memory** for boot code, and **DRAM - Dynamic Random Access Memory** for large main memory. This shows that you understand memory is a hierarchy, not one block.
+
+When you write **interconnect**, connect it to **AXI - Advanced eXtensible Interface**, **AHB - Advanced High-performance Bus**, **APB - Advanced Peripheral Bus** or **NoC - Network on Chip**. This shows how components actually communicate inside the SoC.
+
+When you write **peripherals**, give examples with full forms: **UART - Universal Asynchronous Receiver/Transmitter**, **SPI - Serial Peripheral Interface** and **GPIO - General-Purpose Input/Output**. This makes the answer concrete instead of abstract.
+
+When you write **hardware/software partitioning**, explain that repeated high-throughput work may become hardware accelerators, while control, configuration and changing behavior remain software. This is the bridge from CLO 1 introduction to CLO 4 co-design.
 
 One-line memory aid:
 
